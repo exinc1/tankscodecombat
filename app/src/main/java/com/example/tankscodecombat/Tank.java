@@ -1,6 +1,6 @@
 package com.example.tankscodecombat;
 
-public class Tank {
+public abstract class Tank {
     // Enums
     public enum Direction { NORTH, EAST, SOUTH, WEST }
     public enum Ammo { BULLET, MISSILE }
@@ -21,33 +21,35 @@ public class Tank {
     }
 
     // Methods
-    private boolean move(Speed speed) {
+    public boolean move(Speed speed) {
         // TODO: implement movement
         return true;
     }
 
-    private boolean rotate(Direction direction) {
+    public boolean rotate(Direction direction) {
         // TODO: implement rotation
         return true;
     }
 
-    private boolean rotateTurret(Direction direction) {
+    public boolean rotateTurret(Direction direction) {
         // TODO: implement turret rotation
         return true;
     }
 
-    private boolean fire() {
+    public boolean fire() {
         // TODO: implement firing
         return true;
     }
 
-    private boolean reload(Ammo ammo) {
+    public boolean reload(Ammo ammo) {
         // TODO: implement reloading
         return true;
     }
 
-    private Direction radar() {
+    protected Direction radar() {
         // TODO: implement radar scanning
         return Direction.NORTH;
     }
+
+    abstract Action run();
 }
