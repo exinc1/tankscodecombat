@@ -26,28 +26,31 @@ public class Game {
         {
             Action action1 = m_tanks[1].run();
             Action action2 = m_tanks[2].run();
+
+            // if action is illeagal or game ends break loop else document
             if (!tankHandler.action(1, action1)) {
                 break;
             }
             else {
-                document(1, action1.getType());
+                document(1, action1);
             }
-            if (!tankHandler.action(2, action1)) {
+            if (!tankHandler.action(2, action2)) {
                 break;
             }
             else {
-                document(2, action2.getType());
+                document(2, action2);
             }
         }
         return 0;
     }
     private Action getAction(int tankId, Direction direction){
         // TODO: implement this func
+        // maybe delete this
         return null;
     }
-    private void document(int tankId, ActionType actionType)
+    private void document(int tankId, Action action)
     {
-        // TODO: implement this func
+        m_document.put(tankId, action);
     }
     public Map<Integer, Action> getDocument(){
         return m_document;

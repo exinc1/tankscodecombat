@@ -12,10 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tankscodecombat">
         <activity
-            android:name=".signIn"
+            android:name=".LogIn"
+            android:exported="false" />
+        <activity
+            android:name=".register"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SignIn"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

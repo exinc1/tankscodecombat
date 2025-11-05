@@ -1,6 +1,7 @@
 package com.example.tankscodecombat;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +17,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,10 +25,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
-
-
-
-
 
 public class SignIn extends AppCompatActivity {
 
@@ -52,16 +48,16 @@ public class SignIn extends AppCompatActivity {
         ref = FirebaseAuth.getInstance();
     }
 
-    public void createUser(View view){
+    public void createUser(View view) {
         String email = ETemail.getText().toString();
         String password = ETpassword.getText().toString();
-        if(email.isEmpty()||password.isEmpty()){
+        if(email.isEmpty() || password.isEmpty()) {
             Toast.makeText(SignIn.this, "please fill all fields", Toast.LENGTH_SHORT).show();
         }
-        else{
+        else {
             ProgressDialog pd = new ProgressDialog(this);
             pd.setTitle("Connecting...");
-            pd.setMessage("creating user...");
+            pd.setMessage("connecting user...");
             pd.show();
             ref.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
@@ -71,19 +67,30 @@ public class SignIn extends AppCompatActivity {
                         Log.i("MainActivity", "createUserWithEmailAndPassword:success");
                         FirebaseUser user = ref.getCurrentUser();
                         Toast.makeText(SignIn.this, "User created successfully\nUid: " + user.getUid(), Toast.LENGTH_SHORT).show();
-                    } else {
+
+                        // go to MainActivity after successful sign in
+                        Intent intent = new Intent(SignIn.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    else {
                         Exception exp = task.getException();
                         if (exp instanceof FirebaseAuthInvalidUserException) {
                             Toast.makeText(SignIn.this, "invalid email address.", Toast.LENGTH_SHORT).show();
-                        } else if (exp instanceof FirebaseAuthWeakPasswordException) {
+                        }
+                        else if (exp instanceof FirebaseAuthWeakPasswordException) {
                             Toast.makeText(SignIn.this, "Password too weak.", Toast.LENGTH_SHORT).show();
-                        } else if (exp instanceof FirebaseAuthUserCollisionException) {
+                        }
+                        else if (exp instanceof FirebaseAuthUserCollisionException) {
                             Toast.makeText(SignIn.this, "User already exists.", Toast.LENGTH_SHORT).show();
-                        } else if (exp instanceof FirebaseAuthInvalidCredentialsException) {
+                        }
+                        else if (exp instanceof FirebaseAuthInvalidCredentialsException) {
                             Toast.makeText(SignIn.this, "General authentication failure.", Toast.LENGTH_SHORT).show();
-                        } else if (exp instanceof FirebaseNetworkException) {
+                        }
+                        else if (exp instanceof FirebaseNetworkException) {
                             Toast.makeText(SignIn.this, "Network error. please check your connection.", Toast.LENGTH_SHORT).show();
-                        } else {
+                        }
+                        else {
                             Toast.makeText(SignIn.this, "An error occured. please try again later.", Toast.LENGTH_SHORT).show();
                         }
 
@@ -91,5 +98,12 @@ public class SignIn extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public void goToLogin(View view) {
+        // go to login
+        Intent intent = new Intent(SignIn.this, LogIn.class);
+        startActivity(intent);
+        finish();
     }
 }
