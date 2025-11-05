@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.tankscodecombat" />
+                  <option name="mobileSdkAppId" value="1:932388519651:android:1a41ea69ebacef22c68fd6" />
+                  <option name="projectId" value="tankscodecombat" />
+                  <option name="projectNumber" value="932388519651" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

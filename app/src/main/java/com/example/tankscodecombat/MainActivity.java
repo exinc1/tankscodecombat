@@ -7,11 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import java.io.File;
 import java.util.Map;
+import android.widget.TextView;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 public class MainActivity extends AppCompatActivity {
     private Game game;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,16 +27,16 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // change this later
-        Tank[] tanks = new Tank[2];
-        tanks[0] = new Tank();
-        tanks[1] = new Tank();
-
+        File file1 = new File("");
+        File file2 = new File("");
         // run game and get log
-        game = new Game(tanks);
+        try {
+            game = new Game(file1, file2);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         Map<Integer, Action> doc = game.getDocument();
         System.out.println(doc);
-
-        // TODO: put on screen (later)
     }
 }
