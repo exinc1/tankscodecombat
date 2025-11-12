@@ -15,41 +15,65 @@ public abstract class Tank {
             return speedVal;
         }
     }
+    private boolean _canAct = true;
+    private Speed _speed;
+    private Direction _direction;
+    private Direction _turretDirection;
+    private Ammo _ammo;
     // Constructor
     public Tank() {
-        // init tank state here
+        _speed = Speed.STOP;
+        _ammo = Ammo.BULLET;
+        _direction = Direction.NORTH;
+        _turretDirection = Direction.NORTH;
     }
 
     // Methods
     public boolean move(Speed speed) {
-        // TODO: implement movement
+        if (!_canAct) return false;
+
+        _speed = speed;
+        _canAct = false;
         return true;
     }
 
     public boolean rotate(Direction direction) {
-        // TODO: implement rotation
+        if (!_canAct) return false;
+
+        _direction = direction;
+        _canAct = false;
         return true;
     }
 
     public boolean rotateTurret(Direction direction) {
-        // TODO: implement turret rotation
+        if (!_canAct) return false;
+
+        _turretDirection = direction;
+        _canAct = false;
         return true;
     }
 
     public boolean fire() {
-        // TODO: implement firing
+        if (!_canAct || _ammo == null) return false;
+
+        // implement fire
+        _canAct = false;
         return true;
     }
 
     public boolean reload(Ammo ammo) {
-        // TODO: implement reloading
+        if (!_canAct) return false;
+
+        _ammo = ammo;
+        _canAct = false;
         return true;
     }
 
-    protected Direction radar() {
-        // TODO: implement radar scanning
+    // user tank dont! touch this
+    public Direction radar() {
+        _canAct = true;
         return Direction.NORTH;
     }
 
-    abstract Action run();
+    abstract Action run(Direction direction);
 }
