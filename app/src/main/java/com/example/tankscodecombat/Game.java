@@ -14,6 +14,7 @@ public class Game {
 
     // Constructor
     public Game(File file1, File file2) throws Exception {
+        m_tanks = new Tank[2];
         m_tanks[0] = BotLoader.loadBot("tank1", file1);
         m_tanks[1] = BotLoader.loadBot("tank2", file2);
         tankHandler = new TankHandler(m_tanks);
@@ -24,10 +25,10 @@ public class Game {
     public int run() {
         while(true)
         {
-            Action action1 = m_tanks[1].run();
-            Action action2 = m_tanks[2].run();
+            Action action1 = m_tanks[0].run(m_tanks[0].radar());
+            Action action2 = m_tanks[1].run(m_tanks[1].radar());
 
-            // if action is illeagal or game ends break loop else document
+            // if action is illegal or game ends break loop else document
             if (!tankHandler.action(1, action1)) {
                 break;
             }
