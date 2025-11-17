@@ -42,7 +42,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/explosion"
             android:contentDescription="Start Game"
-            android:onClick="createUser"
+            android:onClick="startGame"
             android:scaleType="fitXY"
             android:src="@drawable/explosion" />
 
