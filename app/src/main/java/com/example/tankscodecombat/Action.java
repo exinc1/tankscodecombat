@@ -1,7 +1,7 @@
 package com.example.tankscodecombat;
 
 public class Action {
-    public enum ActionType { MOVE, ROTATE, ROTATE_TURRET, FIRE, RELOAD }
+        public enum ActionType { MOVE, ROTATE, ROTATE_TURRET, FIRE, RELOAD }
     private int m_param;
     private ActionType m_type;
 

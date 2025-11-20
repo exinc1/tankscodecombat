@@ -2,11 +2,38 @@ package com.example.tankscodecombat;
 
 public abstract class Tank {
     // Enums
-    public enum Direction { NORTH, EAST, SOUTH, WEST }
-    public enum Ammo { BULLET, MISSILE }
+    public enum Direction {
+        NORTH, EAST, SOUTH, WEST;
+
+        public Direction left() {
+            return values()[(ordinal() + 3) % 4];
+        }
+
+        public Direction right() {
+            return values()[(ordinal() + 1) % 4];
+        }
+
+        public Direction opposite() {
+            return values()[(ordinal() + 2) % 4];
+        }
+    }
+    public enum Ammo {
+        BULLET(1),
+        MISSILE(3);
+
+        private final int range;
+
+        Ammo(int range) {
+            this.range = range;
+        }
+
+        public int getRange() {
+            return range;
+        }
+    }
     public enum Speed {
         REVERSE(-1), STOP(0), SLOW(1), FAST(2);
-        int speedVal;
+        private final int speedVal;
         Speed(int speedVal) {
             this.speedVal = speedVal;
         }
@@ -29,6 +56,23 @@ public abstract class Tank {
     }
 
     // Methods
+
+    public Ammo get_ammo() {
+        return _ammo;
+    }
+
+    public Direction get_direction() {
+        return _direction;
+    }
+
+    public Direction get_turretDirection() {
+        return _turretDirection;
+    }
+
+    public Speed get_speed() {
+        return _speed;
+    }
+
     public boolean move(Speed speed) {
         if (!_canAct) return false;
 
@@ -75,5 +119,5 @@ public abstract class Tank {
         return Direction.NORTH;
     }
 
-    abstract Action run(Direction direction);
+    public abstract Action run(Direction direction);
 }

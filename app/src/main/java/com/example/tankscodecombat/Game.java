@@ -14,40 +14,45 @@ public class Game {
 
     // Constructor
     public Game(File file1, File file2) throws Exception {
+        // load users tanks
         m_tanks = new Tank[2];
         m_tanks[0] = BotLoader.loadBot("tank1", file1);
         m_tanks[1] = BotLoader.loadBot("tank2", file2);
+
         tankHandler = new TankHandler(m_tanks);
         m_document = new HashMap<>();
     }
 
     // Run method
-    public int run() {
-        while(true)
+    public int run(int turns) {
+        int game_state = 0;
+        for (int i = 0; i < turns; i++)
         {
+            // run users code
             Action action1 = m_tanks[0].run(m_tanks[0].radar());
             Action action2 = m_tanks[1].run(m_tanks[1].radar());
 
             // if action is illegal or game ends break loop else document
-            if (!tankHandler.action(1, action1)) {
+            // 0 = illegal, 1 = tank 1 wins, 2 = tank 2 wins, 3 = nothing
+            game_state = tankHandler.action(1, action1);
+            if (game_state != 3) {
+                if (game_state != 0) document(1, action1);
                 break;
             }
             else {
                 document(1, action1);
             }
-            if (!tankHandler.action(2, action2)) {
+
+            game_state = tankHandler.action(2, action2);
+            if (game_state != 3) {
+                if (game_state != 0) document(2, action2);
                 break;
             }
             else {
                 document(2, action2);
             }
         }
-        return 0;
-    }
-    private Action getAction(int tankId, Direction direction){
-        // TODO: implement this func
-        // maybe delete this
-        return null;
+        return game_state;
     }
     private void document(int tankId, Action action)
     {

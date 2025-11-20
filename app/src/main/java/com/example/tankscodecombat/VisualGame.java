@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.Map;
 
 public class VisualGame extends AppCompatActivity {
+    public final int MAX_NUMBER_OF_TURNS = 100;
     private Game game;
 
     @Override
@@ -25,11 +26,15 @@ public class VisualGame extends AppCompatActivity {
             return insets;
         });
 
-        File file1 = new File("");
-        File file2 = new File("");
+        File file1 = new File("bots/RandomBot1.class");
+        File file2 = new File("bots/RandomBot1.class");
 
         try {
+            // run game
             game = new Game(file1, file2);
+            game.run(MAX_NUMBER_OF_TURNS);
+
+            // get all the actions that happened in the game
             Map<Integer, Action> doc = game.getDocument();
             System.out.println(doc);
         }
@@ -37,5 +42,4 @@ public class VisualGame extends AppCompatActivity {
             throw new RuntimeException(e);
         }
     }
-
 }
