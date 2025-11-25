@@ -1,11 +1,12 @@
 package com.example.tankscodecombat;
+
 import java.util.Random;
-import java.util.random.*;
+
 public class Board {
     Random ran = new Random();
     private final int SIZE = 100;
     private final Tank[] m_tanks;
-    private Location[] m_tanksLocation;
+    private static Location[] m_tanksLocation;
     public Board(Tank[] tanks) {
         m_tanks = tanks;
 
@@ -21,7 +22,9 @@ public class Board {
 
         switch (action.getType()) {
             case FIRE:
-
+                if (getRadar(tankId).equals(m_tanks[tankId].get_direction())) {
+                    return tankId + 1;
+                }
             case RELOAD:
             case ROTATE:
             case ROTATE_TURRET:
@@ -30,5 +33,12 @@ public class Board {
         }
 
         return 3;
+    }
+
+    public static Direction getRadar(int tankId) {
+        double angle = Math.atan2(m_tanksLocation[tankId].getY(), m_tanksLocation[tankId].getX());
+
+        // convert radians to degrees
+        return new Direction((int)Math.toDegrees(angle));
     }
 }

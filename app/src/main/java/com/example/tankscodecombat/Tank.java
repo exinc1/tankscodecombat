@@ -2,21 +2,21 @@ package com.example.tankscodecombat;
 
 public abstract class Tank {
     // Enums
-    public enum Direction {
-        NORTH, EAST, SOUTH, WEST;
-
-        public Direction left() {
-            return values()[(ordinal() + 3) % 4];
-        }
-
-        public Direction right() {
-            return values()[(ordinal() + 1) % 4];
-        }
-
-        public Direction opposite() {
-            return values()[(ordinal() + 2) % 4];
-        }
-    }
+//    public enum Direction {
+//        NORTH, EAST, SOUTH, WEST;
+//
+//        public Direction left() {
+//            return values()[(ordinal() + 3) % 4];
+//        }
+//
+//        public Direction right() {
+//            return values()[(ordinal() + 1) % 4];
+//        }
+//
+//        public Direction opposite() {
+//            return values()[(ordinal() + 2) % 4];
+//        }
+//    }
     public enum Ammo {
         BULLET(1),
         MISSILE(3);
@@ -51,8 +51,8 @@ public abstract class Tank {
     public Tank() {
         _speed = Speed.STOP;
         _ammo = Ammo.BULLET;
-        _direction = Direction.NORTH;
-        _turretDirection = Direction.NORTH;
+        _direction = new Direction(0);
+        _turretDirection = new Direction(0);
     }
 
     // Methods
@@ -111,12 +111,6 @@ public abstract class Tank {
         _ammo = ammo;
         _canAct = false;
         return true;
-    }
-
-    // user tank dont! touch this
-    public Direction radar() {
-        _canAct = true;
-        return Direction.NORTH;
     }
 
     public abstract Action run(Direction direction);

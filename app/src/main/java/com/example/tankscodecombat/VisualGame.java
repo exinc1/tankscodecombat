@@ -1,6 +1,8 @@
 package com.example.tankscodecombat;
 
 import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,20 +28,33 @@ public class VisualGame extends AppCompatActivity {
             return insets;
         });
 
-        File file1 = new File("bots/RandomBot1.class");
-        File file2 = new File("bots/RandomBot1.class");
+        // get file paths from Intent
+        String path1 = getIntent().getStringExtra("BOT1_PATH");
+        String path2 = getIntent().getStringExtra("BOT2_PATH");
 
+        if (path1 == null || path2 == null) {
+            Toast.makeText(this, "Files missing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        File file1 = new File(path1);
+        File file2 = new File(path2);
+
+        // run the Game Logic
         try {
-            // run game
             game = new Game(file1, file2);
-            game.run(MAX_NUMBER_OF_TURNS);
 
-            // get all the actions that happened in the game
+            int result = game.run(MAX_NUMBER_OF_TURNS);
+
+            // display Results
             Map<Integer, Action> doc = game.getDocument();
-            System.out.println(doc);
+
+            StringBuilder logBuilder = new StringBuilder();
+
+
         }
         catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

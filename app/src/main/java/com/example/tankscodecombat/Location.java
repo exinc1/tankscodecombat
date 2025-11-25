@@ -1,4 +1,8 @@
 package com.example.tankscodecombat;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 public class Location {
     private int x;
     private int y;
@@ -24,22 +28,12 @@ public class Location {
         this.y = y;
     }
 
-    public void move(Tank.Direction direction, Tank.Speed speed) {
+    public void move(Direction direction, Tank.Speed speed) {
         int amount = speed.getSpeedVal(); // FAST=2, SLOW=1, REVERSE=-1, STOP=0
 
-        switch (direction) {
-            case NORTH:
-                y -= amount;
-                break;
-            case SOUTH:
-                y += amount;
-                break;
-            case EAST:
-                x += amount;
-                break;
-            case WEST:
-                x -= amount;
-                break;
-        }
+        // x += distance * cos(degree)
+        // y += distance * sin(degree)
+        setX(getX() + (int)((amount * 10) * cos(direction.getDegrees())));
+        setY(getY() + (int)((amount * 10) * sin(direction.getDegrees())));
     }
 }

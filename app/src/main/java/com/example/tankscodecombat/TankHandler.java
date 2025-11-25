@@ -20,9 +20,9 @@ public class TankHandler {
            case RELOAD:
                return m_board.tankActionToBoard(tankId, action, tank.reload(Tank.Ammo.values()[action.getParam()]));
            case ROTATE:
-               return m_board.tankActionToBoard(tankId, action, tank.rotate(Tank.Direction.values()[action.getParam()]));
+               return m_board.tankActionToBoard(tankId, action, tank.rotate(new Direction(action.getParam())));
            case ROTATE_TURRET:
-               return m_board.tankActionToBoard(tankId, action, tank.rotateTurret(Tank.Direction.values()[action.getParam()]));
+               return m_board.tankActionToBoard(tankId, action, tank.rotateTurret(new Direction(action.getParam())));
         }
        return 3;
    }

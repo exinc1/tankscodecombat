@@ -3,8 +3,6 @@ package com.example.tankscodecombat;
 import java.io.File;
 import java.util.Map;
 import java.util.HashMap;
-import com.example.tankscodecombat.Action.ActionType;
-import com.example.tankscodecombat.Tank.Direction;
 
 public class Game {
     private Tank[] m_tanks;
@@ -25,12 +23,14 @@ public class Game {
 
     // Run method
     public int run(int turns) {
+        if(turns <= 0) return 0;
+
         int game_state = 0;
         for (int i = 0; i < turns; i++)
         {
             // run users code
-            Action action1 = m_tanks[0].run(m_tanks[0].radar());
-            Action action2 = m_tanks[1].run(m_tanks[1].radar());
+            Action action1 = m_tanks[0].run(Board.getRadar(0));
+            Action action2 = m_tanks[1].run(Board.getRadar(1));
 
             // if action is illegal or game ends break loop else document
             // 0 = illegal, 1 = tank 1 wins, 2 = tank 2 wins, 3 = nothing
