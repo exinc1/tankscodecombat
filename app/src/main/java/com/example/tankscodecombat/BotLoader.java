@@ -17,6 +17,8 @@ public class BotLoader {
         // Optimization output folder
         File optimizedDir = context.getCodeCacheDir();
 
+        Log.d("debug", "step 1");
+
         DexClassLoader loader = new DexClassLoader(
                 dexFile.getAbsolutePath(),       // DEX file
                 optimizedDir.getAbsolutePath(),  // optimized output
@@ -24,14 +26,17 @@ public class BotLoader {
                 context.getClassLoader()         // parent loader
         );
 
+        Log.d("debug", "step 2");
         // Load the class
         Class<?> botClass = loader.loadClass(className);
 
+        Log.d("debug", "step 3");
         // Check inheritance
         if (!Tank.class.isAssignableFrom(botClass)) {
             throw new IllegalArgumentException("Class '" + className + "' must extend Tank!");
         }
 
+        Log.d("debug", "step 4");
         Tank instance = (Tank) botClass.getDeclaredConstructor().newInstance();
 
         Log.d("debug", "loadBot() finished successfully!");

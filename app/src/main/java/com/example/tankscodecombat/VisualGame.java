@@ -1,6 +1,7 @@
 package com.example.tankscodecombat;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -14,6 +15,8 @@ import android.util.Log;
 
 public class VisualGame extends AppCompatActivity {
     private Game game;
+    private GameBoardView gameBoard;
+    private int gameResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,9 @@ public class VisualGame extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        gameBoard = findViewById(R.id.gameBoard);
+        Button skipEnd = findViewById(R.id.skipEnd);
 
         // get file paths from Intent
         String path1 = getIntent().getStringExtra("BOT1_PATH");
@@ -42,18 +48,41 @@ public class VisualGame extends AppCompatActivity {
         // run the Game Logic
         try {
             game = new Game(this, file1, file2);
-            int result = game.run();
+            gameResult = game.run(); // store the result
 
-            // display Results
+            // display Results in Logcat
             Logs[] logs = game.getLog();
             for (Logs l: logs) {
-                Log.d("debug", l.toString());
+                if (l != null) Log.d("debug", l.toString());
             }
 
-
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // set listener INSIDE onCreate
+        skipEnd.setOnClickListener(v -> {
+            // Move the board to the end
+            gameBoard.skipToEnd();
+
+            // Show the winner
+            String message;
+            switch (gameResult) {
+                case 1:
+                    message = "Tank 1 wins!";
+                    break;
+                case 2:
+                    message = "Tank 2 wins!";
+                    break;
+                case 0:
+                    message = "Illegal action!";
+                    break;
+                default:
+                    message = "No winner";
+                    break;
+            }
+
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        });
     }
 }

@@ -32,8 +32,9 @@ public class Location {
         int amount = speed.getSpeedVal(); // FAST=2, SLOW=1, REVERSE=-1, STOP=0
 
         // x += distance * cos(degree)
-        // y += distance * sin(degree)
-        setX(getX() + (int)((amount * 10) * cos(direction.getDegrees())));
-        setY(getY() + (int)((amount * 10) * sin(direction.getDegrees())));
+        // y += distance * sin
+        double rad = Math.toRadians(direction.getDegrees());
+        setX(getX() + (int)((amount * 10) * cos(rad)));
+        setY(getY() + (int)((amount * 10) * sin(rad)));
     }
 }
