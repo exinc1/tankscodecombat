@@ -9,7 +9,7 @@ import android.view.View;
 
 public class GameBoardView extends View {
 
-    private final int GRID_SIZE = 100; // 100x100 grid
+    private final int GRID_SIZE = 1000; // 1000x1000 grid
     private Paint gridPaint = new Paint();
     private Paint tankPaint = new Paint();
 

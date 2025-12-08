@@ -3,6 +3,7 @@ package com.example.tankscodecombat;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         // Pass the file paths to the next activity
         intent.putExtra("BOT1_PATH", bot1File.getAbsolutePath());
         intent.putExtra("BOT2_PATH", bot2File.getAbsolutePath());
+        Log.d("debug", "vgame is called started");
         startActivity(intent);
     }
 

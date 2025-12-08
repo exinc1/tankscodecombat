@@ -70,6 +70,7 @@ public class LogIn extends AppCompatActivity {
                                 Log.i("LogIn", "signInWithEmailAndPassword:success");
                                 FirebaseUser user = ref.getCurrentUser();
                                 Toast.makeText(LogIn.this, "Login successful\nUid: " + user.getUid(), Toast.LENGTH_SHORT).show();
+                                Log.d("debug", "main is started");
 
                                 // go to MainActivity after successful login
                                 Intent intent = new Intent(LogIn.this, MainActivity.class);

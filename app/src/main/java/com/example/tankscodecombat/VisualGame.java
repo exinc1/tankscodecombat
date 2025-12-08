@@ -1,7 +1,6 @@
 package com.example.tankscodecombat;
 
 import android.os.Bundle;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -11,14 +10,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.io.File;
-import java.util.Map;
+import android.util.Log;
 
 public class VisualGame extends AppCompatActivity {
-    public final int MAX_NUMBER_OF_TURNS = 100;
     private Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("debug", "vgame has started");
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_visual_game);
@@ -42,14 +41,14 @@ public class VisualGame extends AppCompatActivity {
 
         // run the Game Logic
         try {
-            game = new Game(file1, file2);
-
-            int result = game.run(MAX_NUMBER_OF_TURNS);
+            game = new Game(this, file1, file2);
+            int result = game.run();
 
             // display Results
-            Map<Integer, Action> doc = game.getDocument();
-
-            StringBuilder logBuilder = new StringBuilder();
+            Logs[] logs = game.getLog();
+            for (Logs l: logs) {
+                Log.d("debug", l.toString());
+            }
 
 
         }

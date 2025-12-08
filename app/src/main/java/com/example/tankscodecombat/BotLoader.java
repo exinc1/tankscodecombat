@@ -1,26 +1,41 @@
 package com.example.tankscodecombat;
 
-import java.net.URL;
-import java.net.URLClassLoader;
+import android.content.Context;
+import android.util.Log;
+
+import dalvik.system.DexClassLoader;
+
 import java.io.File;
 
 public class BotLoader {
 
-    public static Tank loadBot(String className, File botFile) throws Exception {
-        // Convert file to URL
-        URL[] urls = { botFile.toURI().toURL() };
-        URLClassLoader loader = new URLClassLoader(urls, BotLoader.class.getClassLoader());
+    // loads a bot from a DEX file.
+    public static Tank loadBot(Context context, String className, File dexFile) throws Exception {
+
+        Log.d("debug", "loadBot() started, dex=" + dexFile.getAbsolutePath());
+
+        // Optimization output folder
+        File optimizedDir = context.getCodeCacheDir();
+
+        DexClassLoader loader = new DexClassLoader(
+                dexFile.getAbsolutePath(),       // DEX file
+                optimizedDir.getAbsolutePath(),  // optimized output
+                null,                            // no native libs
+                context.getClassLoader()         // parent loader
+        );
 
         // Load the class
         Class<?> botClass = loader.loadClass(className);
 
-        // Validate it's a Tank subclass
+        // Check inheritance
         if (!Tank.class.isAssignableFrom(botClass)) {
             throw new IllegalArgumentException("Class '" + className + "' must extend Tank!");
         }
 
-        // Create instance
-        Object instance = botClass.getDeclaredConstructor().newInstance();
-        return (Tank) instance;
+        Tank instance = (Tank) botClass.getDeclaredConstructor().newInstance();
+
+        Log.d("debug", "loadBot() finished successfully!");
+
+        return instance;
     }
 }

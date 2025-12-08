@@ -41,4 +41,8 @@ public class Board {
         // convert radians to degrees
         return new Direction((int)Math.toDegrees(angle));
     }
+
+    public static Location getLocation(int tankId) {
+        return m_tanksLocation[tankId];
+    }
 }
