@@ -1,11 +1,8 @@
 package com.example.tankscodecombat.bots;
-
-import com.example.tankscodecombat.*;
-
-public class RandomBot1 extends Tank {
-    @Override
-    public Action run(Direction direction) {
-            return new Action(Action.ActionType.MOVE, Speed.SLOW.getSpeedVal());
+public class RandomBot1 {
+    // input: direction as string
+    // output: action as string
+    public String run(int direction) {
+        return "MOVE_SLOW";
     }
 }
-
