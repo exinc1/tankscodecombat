@@ -6,41 +6,48 @@ import android.util.Log;
 import dalvik.system.DexClassLoader;
 
 import java.io.File;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class BotLoader {
 
-    // loads a bot from a DEX file.
-    public static Tank loadBot(Context context, String className, File dexFile) throws Exception {
+    // Loads the first public class from the dex file
+    public static Tank loadBot(Context context, File dexFile, File optimizedDir) throws Exception {
+        Log.d("debug", "Loading bot from dex=" + dexFile.getAbsolutePath());
 
-        Log.d("debug", "loadBot() started, dex=" + dexFile.getAbsolutePath());
-
-        // Optimization output folder
-        File optimizedDir = context.getCodeCacheDir();
-
-        Log.d("debug", "step 1");
-
+        // DexClassLoader requires a writable optimized directory
         DexClassLoader loader = new DexClassLoader(
-                dexFile.getAbsolutePath(),       // DEX file
-                optimizedDir.getAbsolutePath(),  // optimized output
-                null,                            // no native libs
-                context.getClassLoader()         // parent loader
+                dexFile.getAbsolutePath(),
+                optimizedDir.getAbsolutePath(),
+                null,
+                context.getClassLoader()
         );
 
-        Log.d("debug", "step 2");
-        // Load the class
+        // Auto-detect class name from dex/jar (simplest: assume only one class)
+        String className = findFirstClassName(dexFile);
+        if (className == null) throw new Exception("No class found in dex file");
+
         Class<?> botClass = loader.loadClass(className);
+        Object botInstance = botClass.getDeclaredConstructor().newInstance();
 
-        Log.d("debug", "step 3");
-        // Check inheritance
-        if (!Tank.class.isAssignableFrom(botClass)) {
-            throw new IllegalArgumentException("Class '" + className + "' must extend Tank!");
+        return new BotTankWrapper(botInstance);
+    }
+
+    // Extract first class name from jar/dex
+    private static String findFirstClassName(File file) throws Exception {
+        if (file.getName().endsWith(".jar")) {
+            try (JarFile jar = new JarFile(file)) {
+                Enumeration<JarEntry> entries = jar.entries();
+                while (entries.hasMoreElements()) {
+                    String name = entries.nextElement().getName();
+                    if (name.endsWith(".class")) {
+                        return name.replace('/', '.').replace(".class", "");
+                    }
+                }
+            }
         }
-
-        Log.d("debug", "step 4");
-        Tank instance = (Tank) botClass.getDeclaredConstructor().newInstance();
-
-        Log.d("debug", "loadBot() finished successfully!");
-
-        return instance;
+        // if already dex, user must know the class name — return null to force manual entry
+        return null;
     }
 }

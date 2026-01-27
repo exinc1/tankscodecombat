@@ -13,20 +13,22 @@ public class Game {
     private final TankHandler m_tankHandler;
 
     // Constructor
-    public Game(Context context, File file1, File file2) throws Exception {
+    public Game(Context context, Tank bot1, Tank bot2) throws Exception {
         Log.d("debug", "game has started");
 
         this.context = context;
 
         // load users tanks
         m_tanks = new Tank[2];
-        m_tanks[0] = BotLoader.loadBot(context, "tank1", file1);
-        m_tanks[1] = BotLoader.loadBot(context, "tank2", file2);
+        m_tanks[0] = bot1;
+        m_tanks[1] = bot2;
         m_tankHandler = new TankHandler(m_tanks);
     }
 
     // Run method
     public int run() {
+        Direction direction = new Direction(10);
+        Log.d("debug", m_tanks[0].run(direction).toString());
         m_logs = new Logs[MAX_NUMBER_OF_TURNS * 2];
 
         int game_state = 0;

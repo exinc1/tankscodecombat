@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,23 +28,25 @@ public class MainActivity extends AppCompatActivity {
     private File bot2File = null;
     private TextView tvBot1Status, tvBot2Status;
 
-    // Launchers (to use drive)
+    // Launcher for picking bot1 from Drive
     private final ActivityResultLauncher<String> selectBot1Launcher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
-                    // copy file to cache so we can use it
-                    bot1File = copyUriToCache(uri, "bot1.jar");
+                    File temp = copyUriToCache(uri, "bot1_temp");
+                    bot1File = copyUriToDex(temp, "bot1");
                     tvBot1Status.setText(bot1File != null ? "Bot 1 Ready!" : "Error loading");
                 }
             }
     );
 
+    // Launcher for picking bot2 from Drive
     private final ActivityResultLauncher<String> selectBot2Launcher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
-                    bot2File = copyUriToCache(uri, "bot2_temp.jar");
+                    File temp = copyUriToCache(uri, "bot2_temp");
+                    bot2File = copyUriToDex(temp, "bot2");
                     tvBot2Status.setText(bot2File != null ? "Bot 2 Ready!" : "Error loading");
                 }
             }
@@ -64,11 +67,12 @@ public class MainActivity extends AppCompatActivity {
         tvBot1Status = findViewById(R.id.tvBot1Status);
         tvBot2Status = findViewById(R.id.tvBot2Status);
 
-        // Setup Button Listeners
+        // Button listeners
         findViewById(R.id.btnSelectBot1).setOnClickListener(v -> selectBot1Launcher.launch("*/*"));
         findViewById(R.id.btnSelectBot2).setOnClickListener(v -> selectBot2Launcher.launch("*/*"));
     }
 
+    // Start VisualGame activity and pass paths
     public void startGame(View view) {
         if (bot1File == null || bot2File == null) {
             Toast.makeText(this, "Please select both bots first!", Toast.LENGTH_SHORT).show();
@@ -76,28 +80,51 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(MainActivity.this, VisualGame.class);
-        // Pass the file paths to the next activity
         intent.putExtra("BOT1_PATH", bot1File.getAbsolutePath());
         intent.putExtra("BOT2_PATH", bot2File.getAbsolutePath());
-        Log.d("debug", "vgame is called started");
+        Log.d("debug", "Starting VisualGame with bots: " +
+                bot1File.getAbsolutePath() + " , " + bot2File.getAbsolutePath());
         startActivity(intent);
     }
 
-    // Helper to copy file from Gallery/Storage to App Cache
+    // Copy a Uri (from Drive or Storage) to app cache
     private File copyUriToCache(Uri uri, String fileName) {
         try {
             File file = new File(getCacheDir(), fileName);
             try (InputStream inputStream = getContentResolver().openInputStream(uri);
                  OutputStream outputStream = new FileOutputStream(file)) {
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = inputStream.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, length);
+                byte[] buffer = new byte[4096];
+                int read;
+                while ((read = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, read);
                 }
             }
             return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        catch (Exception e) {
+    }
+
+    // Copy a file to code_cache, rename to .dex, and make read-only
+    private File copyUriToDex(File srcFile, String dexName) {
+        if (srcFile == null) return null;
+        try {
+            File dexFile = new File(getCodeCacheDir(), dexName + ".dex");
+            if (dexFile.exists()) dexFile.delete();
+
+            try (InputStream in = new FileInputStream(srcFile);
+                 OutputStream out = new FileOutputStream(dexFile)) {
+                byte[] buffer = new byte[4096];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+            }
+
+            // DO NOT set read-only — DexClassLoader needs write access
+            return dexFile;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
