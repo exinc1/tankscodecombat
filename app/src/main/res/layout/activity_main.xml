@@ -77,7 +77,6 @@
         android:layout_height="120dp"
         android:background="@android:color/transparent"
         android:contentDescription="ScoreBoard"
-        android:onClick="startGame"
         android:padding="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/explosion"
@@ -97,7 +96,6 @@
         android:textSize="20dp"
         android:background="#22FFFFFF"
         android:padding="2dp"
-
         app:layout_constraintStart_toStartOf="@id/goScoreBoard"
         app:layout_constraintEnd_toEndOf="@id/goScoreBoard"
         app:layout_constraintTop_toTopOf="@id/goScoreBoard"

@@ -32,6 +32,8 @@ public class HomePage extends AppCompatActivity {
 
             return false;
         });
+        loadFragment(new MainActivityFragment());
+
     }
 
     private void loadFragment(Fragment fragment) {

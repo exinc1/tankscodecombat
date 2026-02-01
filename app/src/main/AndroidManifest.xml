@@ -18,16 +18,13 @@
             android:name=".VisualGame"
             android:exported="false" />
         <activity
-            android:name=".LogIn"
-            android:exported="false" />
-        <activity
-            android:name=".register"
+            android:name=".SignIn"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true" />
         <activity
-            android:name=".SignIn"
+            android:name=".LogIn"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
