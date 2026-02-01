@@ -73,7 +73,7 @@ public class LogIn extends AppCompatActivity {
                                 Log.d("debug", "main is started");
 
                                 // go to MainActivity after successful login
-                                Intent intent = new Intent(LogIn.this, MainActivity.class);
+                                Intent intent = new Intent(LogIn.this, HomePage.class);
                                 startActivity(intent);
                                 finish();
                             }

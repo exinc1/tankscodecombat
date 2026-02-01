@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/tank_background"
+    tools:context=".MainActivityFragment">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="tanks code combat"
+        android:textSize="40sp"
+        android:textColor="@color/black"
+        android:shadowColor="@android:color/white"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="7"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.12"/>
+
+    <!-- Select Bot 1 Button -->
+    <Button
+        android:id="@+id/btnSelectBot1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Bot 1"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <!-- Bot 1 Status -->
+    <TextView
+        android:id="@+id/tvBot1Status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No file selected"
+        android:textColor="@android:color/white"
+        android:shadowColor="@android:color/black"
+        android:shadowRadius="3"
+        app:layout_constraintTop_toBottomOf="@id/btnSelectBot1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Select Bot 2 Button -->
+    <Button
+        android:id="@+id/btnSelectBot2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Bot 2"
+        app:layout_constraintTop_toBottomOf="@id/tvBot1Status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Bot 2 Status -->
+    <TextView
+        android:id="@+id/tvBot2Status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No file selected"
+        android:textColor="@android:color/white"
+        android:shadowColor="@android:color/black"
+        android:shadowRadius="3"
+        app:layout_constraintTop_toBottomOf="@id/btnSelectBot2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <ImageButton
+        android:id="@+id/goScoreBoard"
+        android:layout_width="108dp"
+        android:layout_height="120dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/explosion"
+        android:contentDescription="ScoreBoard"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.445" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:background="#22FFFFFF"
+        android:padding="2dp"
+        app:layout_constraintStart_toStartOf="@id/goScoreBoard"
+        app:layout_constraintEnd_toEndOf="@id/goScoreBoard"
+        app:layout_constraintTop_toTopOf="@id/goScoreBoard"
+        app:layout_constraintBottom_toBottomOf="@id/goScoreBoard"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
