@@ -29,7 +29,22 @@ public class VisualGame extends AppCompatActivity {
         });
 
         gameBoard = findViewById(R.id.gameBoard);
+
+        // Buttons
+        Button skipStart = findViewById(R.id.skipStart);
+        Button skipBack10 = findViewById(R.id.skipBack10);
+        Button prevButton = findViewById(R.id.prevButton);
+        Button nextButton = findViewById(R.id.nextButton);
+        Button skipForward10 = findViewById(R.id.skipForward10);
         Button skipEnd = findViewById(R.id.skipEnd);
+
+        // Connect buttons
+        skipStart.setOnClickListener(v -> gameBoard.skipToStart());
+        skipEnd.setOnClickListener(v -> gameBoard.skipToEnd());
+        prevButton.setOnClickListener(v -> gameBoard.prevMove());
+        nextButton.setOnClickListener(v -> gameBoard.nextMove());
+        skipBack10.setOnClickListener(v -> gameBoard.skipBackward10());
+        skipForward10.setOnClickListener(v -> gameBoard.skipForward10());
 
         // get JS code from Intent
         String jsCode1 = getIntent().getStringExtra("BOT1_CODE");

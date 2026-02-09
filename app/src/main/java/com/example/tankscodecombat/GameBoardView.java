@@ -90,55 +90,90 @@ public class GameBoardView extends View {
 
         canvas.drawColor(Color.BLACK);
 
-        float cellW = getWidth() / (float) GRID_SIZE;
-        float cellH = getHeight() / (float) GRID_SIZE;
+        if (logs.length == 0) return;
 
-        // Draw grid
-        for (int i = 0; i <= GRID_SIZE; i += 10) {
-            canvas.drawLine(i * cellW, 0, i * cellW, getHeight(), gridPaint);
-            canvas.drawLine(0, i * cellH, getWidth(), i * cellH, gridPaint);
-        }
+        // --- Compute bounds around tanks ---
+        float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
+        float maxX = Float.MIN_VALUE, maxY = Float.MIN_VALUE;
 
-        // Draw tanks and directions
         for (int i = 0; i <= currentIndex; i++) {
             Logs log = logs[i];
             if (log == null) continue;
-
             Location loc = log.get_location();
             if (loc == null) continue;
 
-            float x = loc.getX() * cellW;
-            float y = loc.getY() * cellH;
+            minX = Math.min(minX, loc.getX());
+            minY = Math.min(minY, loc.getY());
+            maxX = Math.max(maxX, loc.getX());
+            maxY = Math.max(maxY, loc.getY());
+        }
+
+        // Add padding
+        float padding = 10f;
+        minX -= padding; minY -= padding;
+        maxX += padding; maxY += padding;
+
+        float width = maxX - minX;
+        float height = maxY - minY;
+
+        // Apply zoom factor to make view less zoomed-in
+        float zoomFactor = 0.75f;
+        float scaleX = getWidth() / width * zoomFactor;
+        float scaleY = getHeight() / height * zoomFactor;
+        float scale = Math.min(scaleX, scaleY);
+
+        // Centering
+        float offsetX = getWidth()/2f - (minX + width/2f) * scale;
+        float offsetY = getHeight()/2f - (minY + height/2f) * scale;
+
+        // Draw grid lines every 10 units
+        for (int gx = (int)Math.floor(minX / 10) * 10; gx <= maxX; gx += 10) {
+            float screenX = gx * scale + offsetX;
+            canvas.drawLine(screenX, 0, screenX, getHeight(), gridPaint);
+        }
+        for (int gy = (int)Math.floor(minY / 10) * 10; gy <= maxY; gy += 10) {
+            float screenY = gy * scale + offsetY;
+            canvas.drawLine(0, screenY, getWidth(), screenY, gridPaint);
+        }
+
+        // Draw tanks
+        for (int i = 0; i <= currentIndex; i++) {
+            Logs log = logs[i];
+            if (log == null) continue;
+            Location loc = log.get_location();
+            if (loc == null) continue;
+
+            float x = loc.getX() * scale + offsetX;
+            float y = loc.getY() * scale + offsetY;
 
             Paint paint = log.get_tankId() == 1 ? tank1Paint : tank2Paint;
 
-            float sizeW = cellW * 3;
-            float sizeH = cellH * 3;
+            float size = scale * 3; // tank square size
+            canvas.drawRect(x, y, x + size, y + size, paint);
 
-            // Draw tank body
-            canvas.drawRect(x, y, x + sizeW, y + sizeH, paint);
+            float centerX = x + size / 2;
+            float centerY = y + size / 2;
 
-            float centerX = x + sizeW / 2;
-            float centerY = y + sizeH / 2;
-
-            // Tank facing direction (yellow)
+            // Tank direction
             Direction tankDir = log.get_tankDirection();
             if (tankDir != null) {
                 double rad = Math.toRadians(tankDir.getDegrees());
-                float lineLen = cellW * 5;
-                float endX = (float) (centerX + lineLen * Math.cos(rad));
-                float endY = (float) (centerY + lineLen * Math.sin(rad));
-                canvas.drawLine(centerX, centerY, endX, endY, tankDirPaint);
+                float lineLen = scale * 5;
+                canvas.drawLine(centerX, centerY,
+                        (float) (centerX + lineLen * Math.cos(rad)),
+                        (float) (centerY + lineLen * Math.sin(rad)),
+                        tankDirPaint);
             }
 
-            // Turret facing direction (cyan)
+            // Turret direction
             Direction turretDir = log.get_turretDirection();
             if (turretDir != null) {
                 double rad = Math.toRadians(turretDir.getDegrees());
-                float lineLen = cellW * 4; // slightly shorter
-                float endX = (float) (centerX + lineLen * Math.cos(rad));
-                float endY = (float) (centerY + lineLen * Math.sin(rad));
-                canvas.drawLine(centerX, centerY, endX, endY, turretDirPaint);
+                float lineLen = scale * 4;
+                canvas.drawLine(centerX, centerY,
+                        (float) (centerX + lineLen * Math.cos(rad)),
+                        (float) (centerY + lineLen * Math.sin(rad)),
+                        turretDirPaint);
             }
         }
     }

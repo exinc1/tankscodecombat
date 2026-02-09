@@ -21,4 +21,12 @@ public class Action {
     public int getParam() {
         return m_param;
     }
+
+    @Override
+    public String toString() {
+        return "Action{" +
+                "type: " + m_type +
+                ", m_param: " + m_param +
+                '}';
+    }
 }
