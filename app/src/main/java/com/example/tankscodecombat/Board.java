@@ -1,5 +1,6 @@
 package com.example.tankscodecombat;
 
+import android.util.Log;
 import java.util.Random;
 
 public class Board {
@@ -7,33 +8,49 @@ public class Board {
     private final int SIZE = 100;
     private final Tank[] m_tanks;
     private static Location[] m_tanksLocation;
+
     public Board(Tank[] tanks) {
         m_tanks = tanks;
 
         m_tanksLocation = new Location[2];
-        m_tanksLocation[0] = new Location(ran.nextInt(SIZE/2) + SIZE/4, 0);
-        m_tanksLocation[1] = new Location(0, ran.nextInt(SIZE/2) + SIZE/4);
+        m_tanksLocation[0] = new Location(ran.nextInt(SIZE / 2) + SIZE / 4, 0);
+        m_tanksLocation[1] = new Location(0, ran.nextInt(SIZE / 2) + SIZE / 4);
+
+        Log.d("debug", "Initial tank positions: Tank0=" + m_tanksLocation[0] +
+                " Tank1=" + m_tanksLocation[1]);
     }
+
     public int tankActionToBoard(int tankId, Action action, boolean isLegal) {
-        if (!isLegal) return 0;
+        if (!isLegal) {
+            Log.d("debug", "Tank " + tankId + " tried illegal action: " + action.getType());
+            return 0;
+        }
 
-        int idx = tankId - 1;
-
-        m_tanksLocation[idx].move(
-                m_tanks[idx].get_direction(),
-                m_tanks[idx].get_speed()
+        // MOVE / ROTATE / RELOAD update the board
+        m_tanksLocation[tankId].move(
+                m_tanks[tankId].get_direction(),
+                m_tanks[tankId].get_speed()
         );
 
-        switch (action.getType()) {
-            case FIRE:
-                if (getRadar(idx).equals(m_tanks[idx].get_direction())) {
-                    return tankId; // winner
-                }
-                break;
-            default:
-                break;
+        Log.d("debug", "Tank " + tankId + " performed " + action.getType() +
+                " at location " + m_tanksLocation[tankId] +
+                " facing " + m_tanks[tankId].get_direction().getDegrees());
+
+        // FIRE check
+        if (action.getType() == Action.ActionType.FIRE) {
+            Direction radar = getRadar(tankId);
+            Log.d("debug", "Tank " + tankId + " fired. Radar angle: " + radar.getDegrees() +
+                    ", Turret facing: " + m_tanks[tankId].get_direction().getDegrees());
+
+            if (radar.equals(m_tanks[tankId].get_direction())) {
+                Log.d("debug", "Tank " + tankId + " HIT enemy! Winner!");
+                return tankId; // winner
+            } else {
+                Log.d("debug", "Tank " + tankId + " FIRE missed.");
+            }
         }
-        return 3;
+
+        return 3; // game ongoing
     }
 
     public static Direction getRadar(int idx) {

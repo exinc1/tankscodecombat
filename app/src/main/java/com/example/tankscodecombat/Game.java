@@ -32,14 +32,14 @@ public class Game {
 
             // Run tank 1
             Action action1 = m_tanks[0].run(Board.getRadar(0));
-            game_state = m_tankHandler.action(1, action1);
+            game_state = m_tankHandler.action(0, action1);
             document(turn, 1, action1);
 
             if (game_state != 3) break; // game ended
 
             // Run tank 2
             Action action2 = m_tanks[1].run(Board.getRadar(1));
-            game_state = m_tankHandler.action(2, action2);
+            game_state = m_tankHandler.action(1, action2);
             document(turn, 2, action2);
 
             if (game_state != 3) break; // game ended
@@ -50,8 +50,10 @@ public class Game {
 
     // Document each tank action in logs
     private void document(int turnIndex, int tankId, Action action) {
-        int logIndex = turnIndex * 2 + (tankId - 1); // turn 0: tank1=0, tank2=1
-        m_logs[logIndex] = new Logs(tankId, action, Board.getLocation(tankId));
+        int logIndex = turnIndex * 2 + (tankId - 1);
+        if (logIndex >= 0 && logIndex < m_logs.length) {
+            m_logs[logIndex] = new Logs(tankId, action, Board.getLocation(tankId - 1));
+        }
     }
 
     public Logs[] getLog() {
