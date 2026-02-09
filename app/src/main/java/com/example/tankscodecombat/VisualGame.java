@@ -10,7 +10,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.io.File;
 import android.util.Log;
 
 public class VisualGame extends AppCompatActivity {
@@ -32,26 +31,19 @@ public class VisualGame extends AppCompatActivity {
         gameBoard = findViewById(R.id.gameBoard);
         Button skipEnd = findViewById(R.id.skipEnd);
 
-        // get dex file paths from Intent
-        String path1 = getIntent().getStringExtra("BOT1_PATH");
-        String path2 = getIntent().getStringExtra("BOT2_PATH");
+        // get JS code from Intent
+        String jsCode1 = getIntent().getStringExtra("BOT1_CODE");
+        String jsCode2 = getIntent().getStringExtra("BOT2_CODE");
 
-        if (path1 == null || path2 == null) {
-            Toast.makeText(this, "Files missing", Toast.LENGTH_SHORT).show();
+        if (jsCode1 == null || jsCode2 == null) {
+            Toast.makeText(this, "Bot code missing", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        File file1 = new File(path1);
-        File file2 = new File(path2);
-
-        // create writable optimized directory
-        File optimizedDir = new File(getCodeCacheDir(), "opt_dex");
-        if (!optimizedDir.exists()) optimizedDir.mkdirs();
-
         try {
-            // Load bots from dex files
-            Tank bot1 = BotLoader.loadBot(this, file1, optimizedDir);
-            Tank bot2 = BotLoader.loadBot(this, file2, optimizedDir);
+            // Create JS bots directly from code strings
+            Tank bot1 = new JSBotTank(jsCode1);
+            Tank bot2 = new JSBotTank(jsCode2);
 
             // run the Game
             game = new Game(this, bot1, bot2);

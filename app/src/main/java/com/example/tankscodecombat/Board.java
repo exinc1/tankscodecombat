@@ -15,31 +15,35 @@ public class Board {
         m_tanksLocation[1] = new Location(0, ran.nextInt(SIZE/2) + SIZE/4);
     }
     public int tankActionToBoard(int tankId, Action action, boolean isLegal) {
-        if (!isLegal){ return 0; }
+        if (!isLegal) return 0;
 
-        // move tank
-        m_tanksLocation[tankId].move(m_tanks[tankId].get_direction(), m_tanks[tankId].get_speed());
+        int idx = tankId - 1;
+
+        m_tanksLocation[idx].move(
+                m_tanks[idx].get_direction(),
+                m_tanks[idx].get_speed()
+        );
 
         switch (action.getType()) {
             case FIRE:
-                if (getRadar(tankId).equals(m_tanks[tankId].get_direction())) {
-                    return tankId + 1;
+                if (getRadar(idx).equals(m_tanks[idx].get_direction())) {
+                    return tankId; // winner
                 }
-            case RELOAD:
-            case ROTATE:
-            case ROTATE_TURRET:
+                break;
             default:
                 break;
         }
-
         return 3;
     }
 
-    public static Direction getRadar(int tankId) {
-        double angle = Math.atan2(m_tanksLocation[tankId].getY(), m_tanksLocation[tankId].getX());
+    public static Direction getRadar(int idx) {
+        int enemy = 1 - idx;
 
-        // convert radians to degrees
-        return new Direction((int)Math.toDegrees(angle));
+        double dx = m_tanksLocation[enemy].getX() - m_tanksLocation[idx].getX();
+        double dy = m_tanksLocation[enemy].getY() - m_tanksLocation[idx].getY();
+
+        double angle = Math.atan2(dy, dx);
+        return new Direction((int) Math.toDegrees(angle));
     }
 
     public static Location getLocation(int tankId) {

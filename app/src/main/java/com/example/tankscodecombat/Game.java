@@ -3,10 +3,8 @@ package com.example.tankscodecombat;
 import android.content.Context;
 import android.util.Log;
 
-import java.io.File;
-
 public class Game {
-    private Context context;
+    private final Context context;
     public final int MAX_NUMBER_OF_TURNS = 100;
     private final Tank[] m_tanks;
     private Logs[] m_logs;
@@ -14,11 +12,11 @@ public class Game {
 
     // Constructor
     public Game(Context context, Tank bot1, Tank bot2) throws Exception {
-        Log.d("debug", "game has started");
+        Log.d("debug", "Game has started");
 
         this.context = context;
 
-        // load users tanks
+        // Load user tanks
         m_tanks = new Tank[2];
         m_tanks[0] = bot1;
         m_tanks[1] = bot2;
@@ -27,43 +25,35 @@ public class Game {
 
     // Run method
     public int run() {
-        Direction direction = new Direction(10);
-        Log.d("debug", m_tanks[0].run(direction).toString());
-        m_logs = new Logs[MAX_NUMBER_OF_TURNS * 2];
+        m_logs = new Logs[MAX_NUMBER_OF_TURNS * 2]; // two logs per turn
 
-        int game_state = 0;
-        for (int i = 0; i < MAX_NUMBER_OF_TURNS; i++)
-        {
-            // run users code
+        int game_state = 3; // 3 = ongoing
+        for (int turn = 0; turn < MAX_NUMBER_OF_TURNS; turn++) {
+
+            // Run tank 1
             Action action1 = m_tanks[0].run(Board.getRadar(0));
-            Action action2 = m_tanks[1].run(Board.getRadar(1));
-
-            // if action is illegal or game ends break loop else document
-            // 0 = illegal, 1 = tank 1 wins, 2 = tank 2 wins, 3 = nothing
             game_state = m_tankHandler.action(1, action1);
-            if (game_state != 3) {
-                if (game_state != 0) document(i, 1, action1);
-                break;
-            }
-            else {
-                document(i, 1, action1);
-            }
+            document(turn, 1, action1);
 
+            if (game_state != 3) break; // game ended
+
+            // Run tank 2
+            Action action2 = m_tanks[1].run(Board.getRadar(1));
             game_state = m_tankHandler.action(2, action2);
-            if (game_state != 3) {
-                if (game_state != 0) document(i, 2, action2);
-                break;
-            }
-            else {
-                document(i, 2, action2);
-            }
+            document(turn, 2, action2);
+
+            if (game_state != 3) break; // game ended
         }
+
         return game_state;
     }
-    private void document(int index, int tankId, Action action)
-    {
-        m_logs[index] = new Logs(tankId, action, Board.getLocation(tankId));
+
+    // Document each tank action in logs
+    private void document(int turnIndex, int tankId, Action action) {
+        int logIndex = turnIndex * 2 + (tankId - 1); // turn 0: tank1=0, tank2=1
+        m_logs[logIndex] = new Logs(tankId, action, Board.getLocation(tankId));
     }
+
     public Logs[] getLog() {
         return m_logs;
     }

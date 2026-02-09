@@ -15,32 +15,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 
 public class MainActivityFragment extends Fragment {
 
-    private File bot1File, bot2File;
+    private String bot1Code, bot2Code;
     private TextView tvBot1Status, tvBot2Status;
 
     private final ActivityResultLauncher<String> selectBot1Launcher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
-                    File temp = copyUriToCache(uri, "bot1_temp");
-                    bot1File = copyUriToDex(temp, "bot1");
-                    tvBot1Status.setText(bot1File != null ? "Bot 1 Ready!" : "Error loading");
+                    bot1Code = readJsFile(uri);
+                    tvBot1Status.setText(bot1Code != null ? "Bot 1 Ready!" : "Error loading");
                 }
             });
 
     private final ActivityResultLauncher<String> selectBot2Launcher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
-                    File temp = copyUriToCache(uri, "bot2_temp");
-                    bot2File = copyUriToDex(temp, "bot2");
-                    tvBot2Status.setText(bot2File != null ? "Bot 2 Ready!" : "Error loading");
+                    bot2Code = readJsFile(uri);
+                    tvBot2Status.setText(bot2Code != null ? "Bot 2 Ready!" : "Error loading");
                 }
             });
 
@@ -57,10 +53,10 @@ public class MainActivityFragment extends Fragment {
         tvBot2Status = view.findViewById(R.id.tvBot2Status);
 
         view.findViewById(R.id.btnSelectBot1)
-                .setOnClickListener(v -> selectBot1Launcher.launch("*/*"));
+                .setOnClickListener(v -> selectBot1Launcher.launch("application/javascript"));
 
         view.findViewById(R.id.btnSelectBot2)
-                .setOnClickListener(v -> selectBot2Launcher.launch("*/*"));
+                .setOnClickListener(v -> selectBot2Launcher.launch("application/javascript"));
 
         view.findViewById(R.id.goScoreBoard)
                 .setOnClickListener(this::startGame);
@@ -69,51 +65,32 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void startGame(View v) {
-        if (bot1File == null || bot2File == null) {
+        if (bot1Code == null || bot2Code == null) {
             Toast.makeText(requireContext(),
                     "Please select both bots first!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         Intent intent = new Intent(requireActivity(), VisualGame.class);
-        intent.putExtra("BOT1_PATH", bot1File.getAbsolutePath());
-        intent.putExtra("BOT2_PATH", bot2File.getAbsolutePath());
+        intent.putExtra("BOT1_CODE", bot1Code);
+        intent.putExtra("BOT2_CODE", bot2Code);
 
-        Log.d("debug", "Starting VisualGame");
+        Log.d("debug", "Starting VisualGame with JS bots");
         startActivity(intent);
     }
 
-    private File copyUriToCache(Uri uri, String name) {
-        try {
-            File file = new File(requireContext().getCacheDir(), name);
-            try (InputStream in = requireContext().getContentResolver().openInputStream(uri);
-                 OutputStream out = new FileOutputStream(file)) {
+    private String readJsFile(Uri uri) {
+        try (InputStream in = requireContext().getContentResolver().openInputStream(uri);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 
-                byte[] buf = new byte[4096];
-                int r;
-                while ((r = in.read(buf)) != -1) out.write(buf, 0, r);
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
             }
-            return file;
+            return sb.toString();
         } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private File copyUriToDex(File src, String name) {
-        if (src == null) return null;
-        try {
-            File dex = new File(requireContext().getCodeCacheDir(), name + ".dex");
-            if (dex.exists()) dex.delete();
-
-            try (InputStream in = new FileInputStream(src);
-                 OutputStream out = new FileOutputStream(dex)) {
-
-                byte[] buf = new byte[4096];
-                int r;
-                while ((r = in.read(buf)) != -1) out.write(buf, 0, r);
-            }
-            return dex;
-        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

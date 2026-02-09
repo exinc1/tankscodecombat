@@ -1,5 +1,6 @@
 package com.example.tankscodecombat;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +34,7 @@ public class HomePage extends AppCompatActivity {
             return false;
         });
         loadFragment(new MainActivityFragment());
-
+        startService(new Intent(this, MusicService.class));
     }
 
     private void loadFragment(Fragment fragment) {
@@ -41,5 +42,11 @@ public class HomePage extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
                 .commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent(this, MusicService.class));
+        super.onDestroy();
     }
 }
