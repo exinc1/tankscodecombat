@@ -27,32 +27,38 @@ public class Game {
     public int run() {
         m_logs = new Logs[MAX_NUMBER_OF_TURNS * 2]; // two logs per turn
 
+        int turn = 0;
         int game_state = 3; // 3 = ongoing
-        for (int turn = 0; turn < MAX_NUMBER_OF_TURNS; turn++) {
+        for (turn = 0; turn < MAX_NUMBER_OF_TURNS; turn++) {
 
             // Run tank 1
             Action action1 = m_tanks[0].run(Board.getRadar(0));
             game_state = m_tankHandler.action(0, action1);
-            document(turn, 1, action1);
+            document(turn, 0, action1);
 
             if (game_state != 3) break; // game ended
 
             // Run tank 2
             Action action2 = m_tanks[1].run(Board.getRadar(1));
             game_state = m_tankHandler.action(1, action2);
-            document(turn, 2, action2);
+            document(turn, 1, action2);
 
             if (game_state != 3) break; // game ended
         }
 
+        if (turn >= MAX_NUMBER_OF_TURNS)
+        {
+            Log.d("debug", "MAX_NUMBER_OF_TURNS reached");
+            game_state = -1; // no winner
+        }
         return game_state;
     }
 
     // Document each tank action in logs
     private void document(int turnIndex, int tankId, Action action) {
-        int logIndex = turnIndex * 2 + (tankId - 1);
+        int logIndex = turnIndex * 2 + tankId;
         if (logIndex >= 0 && logIndex < m_logs.length) {
-            m_logs[logIndex] = new Logs(tankId, action, Board.getLocation(tankId - 1));
+            m_logs[logIndex] = new Logs(tankId, action, Board.getLocation(tankId), m_tanks[tankId].get_direction(), m_tanks[tankId].get_turretDirection());
         }
     }
 

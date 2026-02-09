@@ -37,4 +37,9 @@ public class Location {
         setX(getX() + (int)((amount * 10) * cos(rad)));
         setY(getY() + (int)((amount * 10) * sin(rad)));
     }
+
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
 }

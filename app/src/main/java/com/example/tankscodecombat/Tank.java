@@ -17,13 +17,17 @@ public abstract class Tank {
     }
     public enum Speed {
         REVERSE(-1), STOP(0), SLOW(1), FAST(2);
-        private final int speedVal;
+        private int speedVal;
         Speed(int speedVal) {
             this.speedVal = speedVal;
         }
 
         public int getSpeedVal() {
             return speedVal;
+        }
+
+        public void setSpeedVal(int speedVal) {
+            this.speedVal = speedVal;
         }
     }
     private boolean _canAct = true;
@@ -57,44 +61,16 @@ public abstract class Tank {
         return _speed;
     }
 
-    public boolean move(Speed speed) {
-        if (!_canAct) return false;
-
-        _speed = speed;
-        _canAct = false;
-        return true;
+    public void set_direction(int direction) {
+        _direction.setDegrees(direction);
     }
 
-    public boolean rotate(Direction direction) {
-        if (!_canAct) return false;
-
-        _direction = direction;
-        _canAct = false;
-        return true;
+    public void set_turretDirection(int direction) {
+        _turretDirection.setDegrees(direction);
     }
 
-    public boolean rotateTurret(Direction direction) {
-        if (!_canAct) return false;
-
-        _turretDirection = direction;
-        _canAct = false;
-        return true;
-    }
-
-    public boolean fire() {
-        if (!_canAct || _ammo == null) return false;
-
-        // implement fire
-        _canAct = false;
-        return true;
-    }
-
-    public boolean reload(Ammo ammo) {
-        if (!_canAct) return false;
-
-        _ammo = ammo;
-        _canAct = false;
-        return true;
+    public void set_speed(int speed) {
+        _speed.setSpeedVal(speed);
     }
 
     public abstract Action run(Direction direction);

@@ -53,6 +53,7 @@ public class VisualGame extends AppCompatActivity {
             Logs[] logs = game.getLog();
             for (Logs l : logs) if (l != null) Log.d("debug", l.toString());
 
+            gameBoard.setLogs(logs);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Error loading bots: " + e.getMessage(), Toast.LENGTH_LONG).show();

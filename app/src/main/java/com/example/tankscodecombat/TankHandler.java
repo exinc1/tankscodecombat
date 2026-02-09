@@ -26,7 +26,8 @@ public class TankHandler {
         switch (action.getType()) {
             case MOVE:
                 Tank.Speed[] speeds = Tank.Speed.values();
-                if (param < 0 || param >= speeds.length) param = 0;
+                if (param < 0 || param > speeds.length) param = 0;
+                tank.set_speed(param);
                 break;
 
             case RELOAD:
@@ -35,7 +36,13 @@ public class TankHandler {
                 break;
 
             case ROTATE:
+                m_tanks[tankId].set_direction(action.getParam());
+                break;
+
             case ROTATE_TURRET:
+                m_tanks[tankId].set_turretDirection(action.getParam());
+                break;
+
             case FIRE:
                 // no change, param is degrees or unused
                 break;
