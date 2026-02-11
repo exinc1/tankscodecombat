@@ -14,17 +14,25 @@ public class JSBotTank extends Tank {
         scope = cx.initStandardObjects();
         cx.evaluateString(scope, jsCode, "bot", 1, null);
 
-        runFunction = (Function) scope.get("run", scope);
+        Object obj = scope.get("run", scope);
+        if (!(obj instanceof Function)) {
+            throw new RuntimeException("JS bot must define function run()");
+        }
+        runFunction = (Function) obj;
         Context.exit();
     }
 
     @Override
-    public Action run(Direction direction) {
+    public Action run(TankState state) {
         Context cx = Context.enter();
         cx.setOptimizationLevel(-1);
 
         NativeObject jsDir = new NativeObject();
-        jsDir.put("degrees", jsDir, direction.getDegrees());
+        jsDir.put("radar", jsDir, state.radar.getDegrees());
+        jsDir.put("direction", jsDir, state.direction.getDegrees());
+        jsDir.put("turret", jsDir, state.turret.getDegrees());
+        jsDir.put("ammo", jsDir, state.ammo.getRange());
+        jsDir.put("speed", jsDir, state.speed.getSpeedVal());
 
         Object result = runFunction.call(cx, scope, scope, new Object[]{ jsDir });
         Context.exit();

@@ -2,6 +2,7 @@ package com.example.tankscodecombat;
 
 public abstract class Tank {
     public enum Ammo {
+        NONE(0),
         BULLET(1),
         MISSILE(3);
 
@@ -30,7 +31,6 @@ public abstract class Tank {
             this.speedVal = speedVal;
         }
     }
-    private boolean _canAct = true;
     private Speed _speed;
     private Direction _direction;
     private Direction _turretDirection;
@@ -73,5 +73,9 @@ public abstract class Tank {
         _speed.setSpeedVal(speed);
     }
 
-    public abstract Action run(Direction direction);
+    TankState getState(Direction radar) {
+        return new TankState(radar, _turretDirection, _direction, _speed, _ammo);
+    }
+
+    public abstract Action run(TankState state);
 }

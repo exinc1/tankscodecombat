@@ -32,14 +32,14 @@ public class Game {
         for (turn = 0; turn < MAX_NUMBER_OF_TURNS; turn++) {
 
             // Run tank 1
-            Action action1 = m_tanks[0].run(Board.getRadar(0));
+            Action action1 = m_tanks[0].run(m_tanks[0].getState(Board.getRadar(0)));
             game_state = m_tankHandler.action(0, action1);
             document(turn, 0, action1);
 
             if (game_state != 3) break; // game ended
 
             // Run tank 2
-            Action action2 = m_tanks[1].run(Board.getRadar(1));
+            Action action2 = m_tanks[1].run(m_tanks[1].getState(Board.getRadar(1)));
             game_state = m_tankHandler.action(1, action2);
             document(turn, 1, action2);
 
