@@ -2,12 +2,12 @@ package com.example.tankscodecombat;
 
 public class Action {
         public enum ActionType { MOVE, ROTATE, ROTATE_TURRET, FIRE, RELOAD }
-    private int m_param;
-    private ActionType m_type;
+    private int param;
+    private ActionType type;
 
     public Action(ActionType type, int param) {
-        m_type = type;
-        m_param = param;
+        this.type = type;
+        this.param = param;
     }
 
     public Action(ActionType type) {
@@ -15,18 +15,26 @@ public class Action {
     }
 
     public ActionType getType() {
-        return m_type;
+        return type;
     }
 
     public int getParam() {
-        return m_param;
+        return param;
+    }
+
+    public void setType(ActionType type) {
+        this.type = type;
+    }
+
+    public void setParam(int param) {
+        this.param = param;
     }
 
     @Override
     public String toString() {
         return "Action{" +
-                "type: " + m_type +
-                ", m_param: " + m_param +
+                "type: " + type +
+                ", param: " + param +
                 '}';
     }
 }

@@ -9,35 +9,48 @@ public class JSBotTank extends Tank {
 
     public JSBotTank(String jsCode) {
         Context cx = Context.enter();
-        cx.setOptimizationLevel(-1); // REQUIRED on Android
+        try {
+            cx.setOptimizationLevel(-1); // REQUIRED on Android
+            cx.setClassShutter(new ClassShutter() {
+                @Override
+                public boolean visibleToScripts(String className) {
+                    return false;
+                }
+            });
 
-        scope = cx.initStandardObjects();
-        cx.evaluateString(scope, jsCode, "bot", 1, null);
+            scope = cx.initStandardObjects();
+            cx.evaluateString(scope, jsCode, "bot", 1, null);
 
-        Object obj = scope.get("run", scope);
-        if (!(obj instanceof Function)) {
-            throw new RuntimeException("JS bot must define function run()");
+            Object obj = scope.get("run", scope);
+            if (!(obj instanceof Function)) {
+                throw new RuntimeException("JS bot must define function run()");
+            }
+            runFunction = (Function) obj;
+        } finally {
+            Context.exit();
         }
-        runFunction = (Function) obj;
-        Context.exit();
     }
 
     @Override
     public Action run(TankState state) {
         Context cx = Context.enter();
-        cx.setOptimizationLevel(-1);
+        try {
+            cx.setOptimizationLevel(-1);
 
-        NativeObject jsDir = new NativeObject();
-        jsDir.put("radar", jsDir, state.radar.getDegrees());
-        jsDir.put("direction", jsDir, state.direction.getDegrees());
-        jsDir.put("turret", jsDir, state.turret.getDegrees());
-        jsDir.put("ammo", jsDir, state.ammo.getRange());
-        jsDir.put("speed", jsDir, state.speed.getSpeedVal());
+            NativeObject jsDir = new NativeObject();
+            jsDir.put("radar", jsDir, state.radar.getDegrees());
+            jsDir.put("direction", jsDir, state.direction.getDegrees());
+            jsDir.put("turret", jsDir, state.turret.getDegrees());
+            jsDir.put("ammo", jsDir, state.ammo.getRange());
+            jsDir.put("speed", jsDir, state.speed.getSpeedVal());
 
-        Object result = runFunction.call(cx, scope, scope, new Object[]{ jsDir });
-        Context.exit();
-
-        return parseAction(result);
+            Object result = runFunction.call(cx, scope, scope, new Object[]{ jsDir });
+            return parseAction(result);
+        } catch (Exception e) {
+            return new Action(Action.ActionType.RELOAD);
+        } finally {
+            Context.exit();
+        }
     }
 
     private Action parseAction(Object result) {

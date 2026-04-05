@@ -12,8 +12,13 @@ public class Board {
         m_tanks = tanks;
 
         m_tanksLocation = new Location[2];
-        m_tanksLocation[0] = new Location(ran.nextInt(SIZE / 2) + SIZE / 4, 0);
-        m_tanksLocation[1] = new Location(0, ran.nextInt(SIZE / 2) + SIZE / 4);
+        Location loc1, loc2;
+        do {
+            loc1 = new Location(ran.nextInt(SIZE / 2) + SIZE / 4, 0);
+            loc2 = new Location(0, ran.nextInt(SIZE / 2) + SIZE / 4);
+        } while (Math.abs(loc1.getX() - loc2.getX()) < 50 || Math.abs(loc1.getY() - loc2.getY()) < 50);
+        m_tanksLocation[0] = loc1;
+        m_tanksLocation[1] = loc2;
 
         Log.d("debug", "Initial tank positions: Tank0=" + m_tanksLocation[0] +
                 " Tank1=" + m_tanksLocation[1]);
@@ -51,7 +56,12 @@ public class Board {
             int diff = Math.abs(radar.getDegrees() - turret.getDegrees()) % 360;
             if (diff <= 5 || diff >= 355) {
                 Log.d("debug", "Tank " + tankId + " HIT!");
-                return tankId + 1;
+                int enemy = 1 - tankId;
+                int damage = tank.get_ammo().getRange();
+                m_tanks[enemy].setHealth(m_tanks[enemy].getHealth() - damage);
+                if (m_tanks[enemy].getHealth() <= 0) {
+                    return tankId + 1;
+                }
             }
         }
 

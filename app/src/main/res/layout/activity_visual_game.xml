@@ -36,6 +36,12 @@
             android:background="#222222">
 
             <Button
+                android:id="@+id/zoomOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zoom Out" />
+
+            <Button
                 android:id="@+id/skipStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,6 +76,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="End" />
+
+            <Button
+                android:id="@+id/zoomIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zoom In" />
         </LinearLayout>
     </HorizontalScrollView>
 

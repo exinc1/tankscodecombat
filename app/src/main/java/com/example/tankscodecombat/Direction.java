@@ -15,7 +15,7 @@ public class Direction {
     }
 
     public void setDegrees(int degrees) {
-        this.degrees = degrees;
+        this.degrees = ((degrees % 360) + 360) % 360;
     }
 
     public Direction rotate(int delta) {

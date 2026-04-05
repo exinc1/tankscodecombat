@@ -33,6 +33,7 @@ public class TankHandler {
             case RELOAD:
                 Tank.Ammo[] ammoTypes = Tank.Ammo.values();
                 if (param < 0 || param >= ammoTypes.length) param = 0;
+                tank.set_ammo(ammoTypes[param]);
                 break;
 
             case ROTATE:

@@ -18,7 +18,8 @@ public abstract class Tank {
     }
     public enum Speed {
         REVERSE(-1), STOP(0), SLOW(1), FAST(2);
-        private int speedVal;
+        private final int speedVal;
+
         Speed(int speedVal) {
             this.speedVal = speedVal;
         }
@@ -26,21 +27,19 @@ public abstract class Tank {
         public int getSpeedVal() {
             return speedVal;
         }
-
-        public void setSpeedVal(int speedVal) {
-            this.speedVal = speedVal;
-        }
     }
     private Speed _speed;
     private Direction _direction;
     private Direction _turretDirection;
     private Ammo _ammo;
+    private int health;
     // Constructor
     public Tank() {
         _speed = Speed.STOP;
         _ammo = Ammo.BULLET;
         _direction = new Direction(0);
         _turretDirection = new Direction(0);
+        health = 100;
     }
 
     // Methods
@@ -70,7 +69,22 @@ public abstract class Tank {
     }
 
     public void set_speed(int speed) {
-        _speed.setSpeedVal(speed);
+        Speed[] speeds = Speed.values();
+        if (speed >= 0 && speed < speeds.length) {
+            _speed = speeds[speed];
+        }
+    }
+
+    public void set_ammo(Ammo ammo) {
+        _ammo = ammo;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = Math.max(0, health);
     }
 
     TankState getState(Direction radar) {

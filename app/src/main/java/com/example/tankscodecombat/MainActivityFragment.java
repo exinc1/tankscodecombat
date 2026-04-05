@@ -1,5 +1,6 @@
 package com.example.tankscodecombat;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -15,9 +16,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivityFragment extends Fragment {
 
@@ -61,6 +72,14 @@ public class MainActivityFragment extends Fragment {
         view.findViewById(R.id.goScoreBoard)
                 .setOnClickListener(this::startGame);
 
+        // Add load saved games button programmatically
+        android.widget.Button loadButton = new android.widget.Button(getContext());
+        loadButton.setText("Load Saved Game");
+        loadButton.setOnClickListener(v -> loadSavedGames());
+        // Assuming the layout has a LinearLayout with id main_container or something, add here
+        // For now, add to the root view
+        ((android.view.ViewGroup) view).addView(loadButton);
+
         return view;
     }
 
@@ -93,5 +112,72 @@ public class MainActivityFragment extends Fragment {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private void loadSavedGames() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(requireContext(), "Please log in first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database.getReference("users").child(user.getUid()).child("games")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<Map<String, Object>> games = new ArrayList<>();
+                        for (DataSnapshot gameSnapshot : dataSnapshot.getChildren()) {
+                            Map<String, Object> game = (Map<String, Object>) gameSnapshot.getValue();
+                            if (game != null) {
+                                games.add(game);
+                            }
+                        }
+                        showGamesDialog(games);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(requireContext(), "Error loading games", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void showGamesDialog(List<Map<String, Object>> games) {
+        if (games.isEmpty()) {
+            Toast.makeText(requireContext(), "No saved games", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String[] gameNames = new String[games.size()];
+        for (int i = 0; i < games.size(); i++) {
+            int result = ((Long) games.get(i).get("result")).intValue();
+            String resultStr = result == 1 ? "Tank 1 Wins" : result == 2 ? "Tank 2 Wins" : "No Winner";
+            gameNames[i] = "Game " + (i + 1) + ": " + resultStr;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Select a Saved Game")
+                .setItems(gameNames, (dialog, which) -> {
+                    Map<String, Object> selectedGame = games.get(which);
+                    startLoadedGame(selectedGame);
+                });
+        builder.show();
+    }
+
+    private void startLoadedGame(Map<String, Object> game) {
+        String bot1Code = (String) game.get("bot1Code");
+        String bot2Code = (String) game.get("bot2Code");
+        int gameResult = ((Long) game.get("result")).intValue();
+        List<Map<String, Object>> logsList = (List<Map<String, Object>>) game.get("logs");
+
+        Intent intent = new Intent(requireActivity(), VisualGame.class);
+        intent.putExtra("BOT1_CODE", bot1Code);
+        intent.putExtra("BOT2_CODE", bot2Code);
+        intent.putExtra("LOADED_GAME", true);
+        intent.putExtra("GAME_RESULT", gameResult);
+        intent.putExtra("LOGS", new ArrayList<>(logsList));
+
+        startActivity(intent);
     }
 }
