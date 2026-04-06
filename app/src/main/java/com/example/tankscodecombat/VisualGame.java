@@ -53,17 +53,30 @@ public class VisualGame extends AppCompatActivity {
         Button skipForward10 = findViewById(R.id.skipForward10);
         Button skipEnd = findViewById(R.id.skipEnd);
 
-        // Connect buttons
         skipStart.setOnClickListener(v -> gameBoard.skipToStart());
-        skipEnd.setOnClickListener(v -> gameBoard.skipToEnd());
         prevButton.setOnClickListener(v -> gameBoard.prevMove());
         nextButton.setOnClickListener(v -> gameBoard.nextMove());
         skipBack10.setOnClickListener(v -> gameBoard.skipBackward10());
         skipForward10.setOnClickListener(v -> gameBoard.skipForward10());
 
-        // get JS code from Intent
-        String jsCode1 = getIntent().getStringExtra("BOT1_CODE");
-        String jsCode2 = getIntent().getStringExtra("BOT2_CODE");
+        String bot1Path = getIntent().getStringExtra("BOT1_PATH");
+        String bot2Path = getIntent().getStringExtra("BOT2_PATH");
+
+        String jsCode1 = null, jsCode2 = null;
+        if (bot1Path != null) {
+            try {
+                jsCode1 = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(bot1Path)));
+            } catch (Exception e) {
+                Log.e("debug", "Error reading bot1 file", e);
+            }
+        }
+        if (bot2Path != null) {
+            try {
+                jsCode2 = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(bot2Path)));
+            } catch (Exception e) {
+                Log.e("debug", "Error reading bot2 file", e);
+            }
+        }
 
         boolean isLoadedGame = getIntent().getBooleanExtra("LOADED_GAME", false);
 
@@ -102,7 +115,6 @@ public class VisualGame extends AppCompatActivity {
             }
         }
 
-        // skip button
         skipEnd.setOnClickListener(v -> {
             gameBoard.skipToEnd();
             String message;

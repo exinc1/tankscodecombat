@@ -10,7 +10,7 @@ public class JSBotTank extends Tank {
     public JSBotTank(String jsCode) {
         Context cx = Context.enter();
         try {
-            cx.setOptimizationLevel(-1); // REQUIRED on Android
+            cx.setOptimizationLevel(-1);
             cx.setClassShutter(new ClassShutter() {
                 @Override
                 public boolean visibleToScripts(String className) {
@@ -37,17 +37,21 @@ public class JSBotTank extends Tank {
         try {
             cx.setOptimizationLevel(-1);
 
-            NativeObject jsDir = new NativeObject();
-            jsDir.put("radar", jsDir, state.radar.getDegrees());
-            jsDir.put("direction", jsDir, state.direction.getDegrees());
-            jsDir.put("turret", jsDir, state.turret.getDegrees());
-            jsDir.put("ammo", jsDir, state.ammo.getRange());
-            jsDir.put("speed", jsDir, state.speed.getSpeedVal());
+            NativeObject jsState = new NativeObject();
+            jsState.put("radar", jsState, state.radar.getDegrees());
+            jsState.put("direction", jsState, state.direction.getDegrees());
+            jsState.put("turret", jsState, state.turret.getDegrees());
+            jsState.put("ammo", jsState, state.ammo.ordinal());
+            jsState.put("ammoName", jsState, state.ammo.name());
+            jsState.put("ammoCount", jsState, state.ammoCount);
+            jsState.put("speed", jsState, state.speed.getSpeedVal());
+            jsState.put("health", jsState, state.health);
+            jsState.put("distance", jsState, (int)state.distance);
 
-            Object result = runFunction.call(cx, scope, scope, new Object[]{ jsDir });
+            Object result = runFunction.call(cx, scope, scope, new Object[]{ jsState });
             return parseAction(result);
         } catch (Exception e) {
-            return new Action(Action.ActionType.RELOAD);
+            return new Action(Action.ActionType.RELOAD, 0);
         } finally {
             Context.exit();
         }
@@ -55,14 +59,14 @@ public class JSBotTank extends Tank {
 
     private Action parseAction(Object result) {
         if (!(result instanceof NativeObject)) {
-            return new Action(Action.ActionType.RELOAD);
+            return new Action(Action.ActionType.RELOAD, 0);
         }
 
         NativeObject obj = (NativeObject) result;
 
         Object typeObj = obj.get("type", obj);
         if (typeObj == null) {
-            return new Action(Action.ActionType.RELOAD);
+            return new Action(Action.ActionType.RELOAD, 0);
         }
 
         String type = typeObj.toString();
@@ -78,8 +82,7 @@ public class JSBotTank extends Tank {
         try {
             return new Action(Action.ActionType.valueOf(type), param);
         } catch (IllegalArgumentException e) {
-            // JS returned an invalid action name
-            return new Action(Action.ActionType.RELOAD);
+            return new Action(Action.ActionType.RELOAD, 0);
         }
     }
 
