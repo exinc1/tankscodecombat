@@ -73,7 +73,7 @@
         android:layout_marginTop="8dp"/>
 
     <ImageButton
-        android:id="@+id/goScoreBoard"
+        android:id="@+id/startGame"
         android:layout_width="108dp"
         android:layout_height="120dp"
         android:background="@android:color/transparent"
@@ -95,10 +95,10 @@
         android:textSize="20dp"
         android:background="#22FFFFFF"
         android:padding="2dp"
-        app:layout_constraintStart_toStartOf="@id/goScoreBoard"
-        app:layout_constraintEnd_toEndOf="@id/goScoreBoard"
-        app:layout_constraintTop_toTopOf="@id/goScoreBoard"
-        app:layout_constraintBottom_toBottomOf="@id/goScoreBoard"/>
+        app:layout_constraintStart_toStartOf="@id/startGame"
+        app:layout_constraintEnd_toEndOf="@id/startGame"
+        app:layout_constraintTop_toTopOf="@id/startGame"
+        app:layout_constraintBottom_toBottomOf="@id/startGame"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,8 @@
 package com.example.tankscodecombat;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -36,6 +39,7 @@ public class MainActivityFragment extends Fragment {
 
     private String bot1Code, bot2Code;
     private TextView tvBot1Status, tvBot2Status;
+    private int botSlotToLoad;
 
     private final ActivityResultLauncher<String> selectBot1Launcher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
@@ -65,14 +69,11 @@ public class MainActivityFragment extends Fragment {
         tvBot1Status = view.findViewById(R.id.tvBot1Status);
         tvBot2Status = view.findViewById(R.id.tvBot2Status);
 
-        view.findViewById(R.id.btnSelectBot1)
-                .setOnClickListener(v -> selectBot1Launcher.launch("application/javascript"));
+        view.findViewById(R.id.btnSelectBot1).setOnClickListener(this::loadBot1);
 
-        view.findViewById(R.id.btnSelectBot2)
-                .setOnClickListener(v -> selectBot2Launcher.launch("application/javascript"));
+        view.findViewById(R.id.btnSelectBot2).setOnClickListener(this::loadBot2);
 
-        view.findViewById(R.id.goScoreBoard)
-                .setOnClickListener(this::startGame);
+        view.findViewById(R.id.startGame).setOnClickListener(this::startGame);
 
         return view;
     }
@@ -92,6 +93,49 @@ public class MainActivityFragment extends Fragment {
         startActivity(intent);
     }
 
+    private void loadBot1(View v) {
+        String[] items = {"select from db", "select from device"};
+
+        AlertDialog alertDialog = new AlertDialog.Builder(requireContext())
+                .setItems(items, (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            botSlotToLoad = 1;
+                            loadBotFromDB();
+                            break;
+                        case 1:
+                            selectBot1Launcher.launch("application/javascript");
+                            break;
+                        case 2:
+                            break;
+                    }
+                })
+                .create();
+
+        alertDialog.show();
+    }
+
+    private void loadBot2(View v) {
+        String[] items = {"select from db", "select from device"};
+
+        AlertDialog alertDialog = new AlertDialog.Builder(requireContext())
+                .setItems(items, (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            botSlotToLoad = 2;
+                            loadBotFromDB();
+                            break;
+                        case 1:
+                            selectBot2Launcher.launch("application/javascript");
+                            break;
+                        case 2:
+                            break;
+                    }
+                })
+                .create();
+
+        alertDialog.show();
+    }
     private String readJsFile(Uri uri) {
         try (InputStream in = requireContext().getContentResolver().openInputStream(uri);
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
@@ -108,7 +152,7 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-    private void loadSavedGames() {
+    private void loadBotFromDB() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toast.makeText(requireContext(), "Please log in first", Toast.LENGTH_SHORT).show();
@@ -116,62 +160,60 @@ public class MainActivityFragment extends Fragment {
         }
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference("users").child(user.getUid()).child("games")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        List<Map<String, Object>> games = new ArrayList<>();
-                        for (DataSnapshot gameSnapshot : dataSnapshot.getChildren()) {
-                            Map<String, Object> game = (Map<String, Object>) gameSnapshot.getValue();
-                            if (game != null) {
-                                games.add(game);
-                            }
-                        }
-                        showGamesDialog(games);
-                    }
+        DatabaseReference userBotsReference = database.getReference("users").child(user.getUid()).child("bots");
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(requireContext(), "Error loading games", Toast.LENGTH_SHORT).show();
+        ArrayList<String> bots = new ArrayList<>();
+        ValueEventListener botListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        if (!bots.contains(snapshot.getKey())) {
+                            bots.add(snapshot.getKey());
+                        }
                     }
-                });
+                }
+
+                String[] botsArray = bots.toArray(new String[0]);
+                AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).setItems(botsArray, (dialog, which) -> {
+                    String selectedBot = bots.get(which);
+                    getBotCodeFromDB(selectedBot);
+                }).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(requireContext(), "Failed to load bots: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        userBotsReference.addValueEventListener(botListener);
     }
 
-    private void showGamesDialog(List<Map<String, Object>> games) {
-        if (games.isEmpty()) {
-            Toast.makeText(requireContext(), "No saved games", Toast.LENGTH_SHORT).show();
+    private void getBotCodeFromDB(String botName) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
             return;
         }
 
-        String[] gameNames = new String[games.size()];
-        for (int i = 0; i < games.size(); i++) {
-            int result = ((Long) games.get(i).get("result")).intValue();
-            String resultStr = result == 1 ? "Tank 1 Wins" : result == 2 ? "Tank 2 Wins" : "No Winner";
-            gameNames[i] = "Game " + (i + 1) + ": " + resultStr;
-        }
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference botCodeReference = database.getReference("users").child(user.getUid()).child("bots").child(botName);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Select a Saved Game")
-                .setItems(gameNames, (dialog, which) -> {
-                    Map<String, Object> selectedGame = games.get(which);
-                    startLoadedGame(selectedGame);
-                });
-        builder.show();
-    }
+        botCodeReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                String code = task.getResult().child("code").getValue(String.class);
 
-    private void startLoadedGame(Map<String, Object> game) {
-        String bot1Code = (String) game.get("bot1Code");
-        String bot2Code = (String) game.get("bot2Code");
-        int gameResult = ((Long) game.get("result")).intValue();
-        List<Map<String, Object>> logsList = (List<Map<String, Object>>) game.get("logs");
-
-        Intent intent = new Intent(requireActivity(), VisualGame.class);
-        intent.putExtra("BOT1_CODE", bot1Code);
-        intent.putExtra("BOT2_CODE", bot2Code);
-        intent.putExtra("LOADED_GAME", true);
-        intent.putExtra("GAME_RESULT", gameResult);
-        intent.putExtra("LOGS", new ArrayList<>(logsList));
-
-        startActivity(intent);
+                if (code != null) {
+                    if (botSlotToLoad == 1) {
+                        bot1Code = code;
+                        tvBot1Status.setText("Bot 1 Ready!");
+                    }
+                    else if (botSlotToLoad == 2) {
+                        bot2Code = code;
+                        tvBot2Status.setText("Bot 2 Ready!");
+                    }
+                }
+            }
+        });
     }
 }
