@@ -27,6 +27,7 @@ public class GameBoardView extends View {
 
     private Bitmap backgroundBitmap;
     private Bitmap explosionBitmap;
+    private Rect viewRect = new Rect(0, 0, getWidth(), getHeight());
 
     private Logs[] logs = new Logs[0];
     private int currentIndex = 0;
@@ -111,7 +112,7 @@ public class GameBoardView extends View {
         invalidate();
     }
 
-    public void skipToStart() {
+    public void skipToStart(View v) {
         currentIndex = 0;
         invalidate();
     }
@@ -127,7 +128,7 @@ public class GameBoardView extends View {
 
         // Draw background
         if (backgroundBitmap != null) {
-            canvas.drawBitmap(backgroundBitmap, null, new Rect(0, 0, getWidth(), getHeight()), null);
+            canvas.drawBitmap(backgroundBitmap, null, viewRect, null);
         } else {
             canvas.drawColor(Color.BLACK);
         }
@@ -278,13 +279,17 @@ public class GameBoardView extends View {
     public void zoomIn() {
         zoomFactor *= 1.2f;
         zoomFactor = Math.min(zoomFactor, 5.0f);
-        invalidate();
+        refresh();
+    }
+
+    private void refresh() {
+        ((VisualGame) getContext()).runOnUiThread(this::invalidate);
     }
 
     public void zoomOut() {
         zoomFactor /= 1.2f;
         zoomFactor = Math.max(zoomFactor, 0.1f);
-        invalidate();
+        refresh();
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -292,7 +297,7 @@ public class GameBoardView extends View {
         public boolean onScale(ScaleGestureDetector detector) {
             zoomFactor *= detector.getScaleFactor();
             zoomFactor = Math.max(0.1f, Math.min(zoomFactor, 5.0f));
-            invalidate();
+            refresh();
             return true;
         }
     }

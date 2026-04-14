@@ -19,7 +19,7 @@ public class TankHandler {
 
         Tank tank = m_tanks[tankId];
         boolean canAct = true;
-        int result = 3;
+        int result;
 
         int param = action.getParam();
         switch (action.getType()) {

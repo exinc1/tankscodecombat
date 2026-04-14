@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivityFragment extends Fragment {
+    public static String BOT1_CODE_KEY = "BOT1_CODE";
+    public static String BOT2_CODE_KEY = "BOT2_CODE";
 
     private String bot1Code, bot2Code;
     private TextView tvBot1Status, tvBot2Status;
@@ -72,14 +74,6 @@ public class MainActivityFragment extends Fragment {
         view.findViewById(R.id.goScoreBoard)
                 .setOnClickListener(this::startGame);
 
-        // Add load saved games button programmatically
-        android.widget.Button loadButton = new android.widget.Button(getContext());
-        loadButton.setText("Load Saved Game");
-        loadButton.setOnClickListener(v -> loadSavedGames());
-        // Assuming the layout has a LinearLayout with id main_container or something, add here
-        // For now, add to the root view
-        ((android.view.ViewGroup) view).addView(loadButton);
-
         return view;
     }
 
@@ -91,8 +85,8 @@ public class MainActivityFragment extends Fragment {
         }
 
         Intent intent = new Intent(requireActivity(), VisualGame.class);
-        intent.putExtra("BOT1_CODE", bot1Code);
-        intent.putExtra("BOT2_CODE", bot2Code);
+        intent.putExtra(BOT1_CODE_KEY, bot1Code);
+        intent.putExtra(BOT2_CODE_KEY, bot2Code);
 
         Log.d("debug", "Starting VisualGame with JS bots");
         startActivity(intent);

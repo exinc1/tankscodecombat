@@ -1,6 +1,7 @@
 package com.example.tankscodecombat;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -16,12 +17,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class VisualGame extends AppCompatActivity {
+    public static final String LOADED_GAME_KEY = "LOADED_GAME";
     private Game game;
     private GameBoardView gameBoard;
     private int gameResult;
@@ -53,32 +57,19 @@ public class VisualGame extends AppCompatActivity {
         Button skipForward10 = findViewById(R.id.skipForward10);
         Button skipEnd = findViewById(R.id.skipEnd);
 
-        skipStart.setOnClickListener(v -> gameBoard.skipToStart());
+        skipStart.setOnClickListener(gameBoard::skipToStart);
         prevButton.setOnClickListener(v -> gameBoard.prevMove());
         nextButton.setOnClickListener(v -> gameBoard.nextMove());
         skipBack10.setOnClickListener(v -> gameBoard.skipBackward10());
         skipForward10.setOnClickListener(v -> gameBoard.skipForward10());
+        skipEnd.setOnClickListener(this::skipEnd);
 
-        String bot1Path = getIntent().getStringExtra("BOT1_PATH");
-        String bot2Path = getIntent().getStringExtra("BOT2_PATH");
 
-        String jsCode1 = null, jsCode2 = null;
-        if (bot1Path != null) {
-            try {
-                jsCode1 = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(bot1Path)));
-            } catch (Exception e) {
-                Log.e("debug", "Error reading bot1 file", e);
-            }
-        }
-        if (bot2Path != null) {
-            try {
-                jsCode2 = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(bot2Path)));
-            } catch (Exception e) {
-                Log.e("debug", "Error reading bot2 file", e);
-            }
-        }
+        String jsCode1 = getIntent().getStringExtra(MainActivityFragment.BOT1_CODE_KEY);
+        String jsCode2 = getIntent().getStringExtra(MainActivityFragment.BOT2_CODE_KEY);
 
-        boolean isLoadedGame = getIntent().getBooleanExtra("LOADED_GAME", false);
+
+        boolean isLoadedGame = getIntent().getBooleanExtra(LOADED_GAME_KEY, false);
 
         if (jsCode1 == null || jsCode2 == null) {
             Toast.makeText(this, "Bot code missing", Toast.LENGTH_SHORT).show();
@@ -115,17 +106,18 @@ public class VisualGame extends AppCompatActivity {
             }
         }
 
-        skipEnd.setOnClickListener(v -> {
-            gameBoard.skipToEnd();
-            String message;
-            switch (gameResult) {
-                case 1: message = "Tank 1 wins!"; break;
-                case 2: message = "Tank 2 wins!"; break;
-                case 0: message = "Illegal action!"; break;
-                default: message = "No winner"; break;
-            }
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        });
+    }
+
+    private void skipEnd(View v) {
+        gameBoard.skipToEnd();
+        String message;
+        switch (gameResult) {
+            case 1: message = "Tank 1 wins!"; break;
+            case 2: message = "Tank 2 wins!"; break;
+            case 0: message = "Illegal action!"; break;
+            default: message = "No winner"; break;
+        }
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     private void saveGame(String jsCode1, String jsCode2, int gameResult, Logs[] logs) {
