@@ -57,11 +57,26 @@ public class VisualGame extends AppCompatActivity {
         Button skipForward10 = findViewById(R.id.skipForward10);
         Button skipEnd = findViewById(R.id.skipEnd);
 
-        skipStart.setOnClickListener(gameBoard::skipToStart);
-        prevButton.setOnClickListener(v -> gameBoard.prevMove());
-        nextButton.setOnClickListener(v -> gameBoard.nextMove());
-        skipBack10.setOnClickListener(v -> gameBoard.skipBackward10());
-        skipForward10.setOnClickListener(v -> gameBoard.skipForward10());
+        skipStart.setOnClickListener(v -> {
+            gameBoard.skipToStart(v);
+            checkGameStatus();
+        });
+        prevButton.setOnClickListener(v -> {
+            gameBoard.prevMove();
+            checkGameStatus();
+        });
+        nextButton.setOnClickListener(v -> {
+            gameBoard.nextMove();
+            checkGameStatus();
+        });
+        skipBack10.setOnClickListener(v -> {
+            gameBoard.skipBackward10();
+            checkGameStatus();
+        });
+        skipForward10.setOnClickListener(v -> {
+            gameBoard.skipForward10();
+            checkGameStatus();
+        });
         skipEnd.setOnClickListener(this::skipEnd);
 
 
@@ -110,14 +125,26 @@ public class VisualGame extends AppCompatActivity {
 
     private void skipEnd(View v) {
         gameBoard.skipToEnd();
+        showGameResult();
+    }
+
+    private void checkGameStatus() {
+        if (gameBoard.isAtEnd()) {
+            showGameResult();
+        }
+    }
+
+    private void showGameResult() {
         String message;
         switch (gameResult) {
             case 1: message = "Tank 1 wins!"; break;
             case 2: message = "Tank 2 wins!"; break;
             case 0: message = "Illegal action!"; break;
-            default: message = "No winner"; break;
+            case -1:
+            case 3: message = "It's a draw!"; break;
+            default: message = "Game Over"; break;
         }
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void saveGame(String jsCode1, String jsCode2, int gameResult, Logs[] logs) {
@@ -127,7 +154,7 @@ public class VisualGame extends AppCompatActivity {
             return;
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://tankscodecombat-default-rtdb.firebaseio.com");
         String userId = user.getUid();
 
         // Create a unique key for the new game

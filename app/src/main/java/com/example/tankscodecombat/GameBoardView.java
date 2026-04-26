@@ -92,6 +92,14 @@ public class GameBoardView extends View {
         invalidate();
     }
 
+    public boolean isAtEnd() {
+        return logs.length > 0 && currentIndex == logs.length - 1;
+    }
+
+    public int getLogsCount() {
+        return logs.length;
+    }
+
     public void nextMove() {
         if (currentIndex < logs.length - 1) currentIndex++;
         invalidate();

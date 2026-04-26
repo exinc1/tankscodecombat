@@ -1,14 +1,13 @@
 package com.example.tankscodecombat;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +29,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivityFragment extends Fragment {
@@ -45,7 +44,12 @@ public class MainActivityFragment extends Fragment {
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
                     bot1Code = readJsFile(uri);
-                    tvBot1Status.setText(bot1Code != null ? "Bot 1 Ready!" : "Error loading");
+                    if (bot1Code != null) {
+                        tvBot1Status.setText("Bot 1 Ready!");
+                        showSaveDialog(bot1Code);
+                    } else {
+                        tvBot1Status.setText("Error loading");
+                    }
                 }
             });
 
@@ -53,7 +57,12 @@ public class MainActivityFragment extends Fragment {
             registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
                     bot2Code = readJsFile(uri);
-                    tvBot2Status.setText(bot2Code != null ? "Bot 2 Ready!" : "Error loading");
+                    if (bot2Code != null) {
+                        tvBot2Status.setText("Bot 2 Ready!");
+                        showSaveDialog(bot2Code);
+                    } else {
+                        tvBot2Status.setText("Error loading");
+                    }
                 }
             });
 
@@ -104,7 +113,7 @@ public class MainActivityFragment extends Fragment {
                             loadBotFromDB();
                             break;
                         case 1:
-                            selectBot1Launcher.launch("application/javascript");
+                            selectBot1Launcher.launch("*/*");
                             break;
                         case 2:
                             break;
@@ -126,7 +135,7 @@ public class MainActivityFragment extends Fragment {
                             loadBotFromDB();
                             break;
                         case 1:
-                            selectBot2Launcher.launch("application/javascript");
+                            selectBot2Launcher.launch("*/*");
                             break;
                         case 2:
                             break;
@@ -159,35 +168,39 @@ public class MainActivityFragment extends Fragment {
             return;
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://tankscodecombat-default-rtdb.firebaseio.com");
         DatabaseReference userBotsReference = database.getReference("users").child(user.getUid()).child("bots");
 
-        ArrayList<String> bots = new ArrayList<>();
-        ValueEventListener botListener = new ValueEventListener() {
+        userBotsReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> bots = new ArrayList<>();
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        if (!bots.contains(snapshot.getKey())) {
-                            bots.add(snapshot.getKey());
-                        }
+                        bots.add(snapshot.getKey());
                     }
                 }
 
+                if (bots.isEmpty()) {
+                    Toast.makeText(requireContext(), "No bots found in database", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String[] botsArray = bots.toArray(new String[0]);
-                AlertDialog alertDialog = new AlertDialog.Builder(requireContext()).setItems(botsArray, (dialog, which) -> {
-                    String selectedBot = bots.get(which);
-                    getBotCodeFromDB(selectedBot);
-                }).show();
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Select a Bot")
+                        .setItems(botsArray, (dialog, which) -> {
+                            String selectedBot = bots.get(which);
+                            getBotCodeFromDB(selectedBot);
+                        }).show();
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Failed to load bots", error.toException());
                 Toast.makeText(requireContext(), "Failed to load bots: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        };
-
-        userBotsReference.addValueEventListener(botListener);
+        });
     }
 
     private void getBotCodeFromDB(String botName) {
@@ -196,23 +209,78 @@ public class MainActivityFragment extends Fragment {
             return;
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://tankscodecombat-default-rtdb.firebaseio.com");
         DatabaseReference botCodeReference = database.getReference("users").child(user.getUid()).child("bots").child(botName);
 
         botCodeReference.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult().exists()) {
-                String code = task.getResult().child("code").getValue(String.class);
+            if (task.isSuccessful()) {
+                DataSnapshot snapshot = task.getResult();
+                if (snapshot != null && snapshot.exists()) {
+                    String code = snapshot.child("code").getValue(String.class);
 
-                if (code != null) {
-                    if (botSlotToLoad == 1) {
-                        bot1Code = code;
-                        tvBot1Status.setText("Bot 1 Ready!");
+                    if (code != null) {
+                        if (botSlotToLoad == 1) {
+                            bot1Code = code;
+                            tvBot1Status.setText("Bot 1 Ready!");
+                        } else if (botSlotToLoad == 2) {
+                            bot2Code = code;
+                            tvBot2Status.setText("Bot 2 Ready!");
+                        }
+                        Toast.makeText(requireContext(), "Bot loaded successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(requireContext(), "Bot code is empty", Toast.LENGTH_SHORT).show();
                     }
-                    else if (botSlotToLoad == 2) {
-                        bot2Code = code;
-                        tvBot2Status.setText("Bot 2 Ready!");
-                    }
+                } else {
+                    Toast.makeText(requireContext(), "Bot not found", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Exception e = task.getException();
+                Log.e("Firebase", "Error getting bot code", e);
+                String errorMessage = (e != null) ? e.getMessage() : "Unknown error";
+                Toast.makeText(requireContext(), "Error taking bot from db: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showSaveDialog(String code) {
+        EditText input = new EditText(requireContext());
+        input.setHint("Enter bot name");
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Save Bot to Database?")
+                .setMessage("Do you want to save this bot for future use?")
+                .setView(input)
+                .setPositiveButton("Save", (dialog, which) -> {
+                    String botName = input.getText().toString().trim();
+                    if (!botName.isEmpty()) {
+                        saveBotToDB(botName, code);
+                    } else {
+                        Toast.makeText(requireContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void saveBotToDB(String botName, String code) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://tankscodecombat-default-rtdb.firebaseio.com");
+        DatabaseReference botRef = database.getReference("users")
+                .child(user.getUid())
+                .child("bots")
+                .child(botName);
+
+        Map<String, Object> botData = new HashMap<>();
+        botData.put("code", code);
+
+        botRef.setValue(botData).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(requireContext(), "Bot saved successfully!", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("Firebase", "Failed to save bot", task.getException());
+                Toast.makeText(requireContext(), "Failed to save bot to DB", Toast.LENGTH_SHORT).show();
             }
         });
     }
