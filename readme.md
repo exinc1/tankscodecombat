@@ -1,4 +1,4 @@
-<div dir="rtl">
+<div dir="rtl" style="text-align: right;">
 
 # Tanks Code Combat
 
@@ -23,7 +23,7 @@
     - [אפליקציות דומות בשוק](#אפליקציות-דומות-בשוק)
     - [סקירת השוק](#סקירת-השוק)
 3. **[3. ניהול הנתונים בפרויקט](#3-ניהול-הנתונים-בפרויקט)**
-    - [אובייקטים נחוצים (במשחק ומחוץ למשחק)](#אובייקטים-נחוצים)
+    - [אובייקטים נחוצים](#אובייקטים-נחוצים)
 4. **[4. מבנה / ארכיטקטורה](#4-מבנה--ארכיטקטורה)**
     - [קבצי הפרויקט](#קבצי-הפרויקט)
     - [מסכי הפרויקט (LogIn, SignUp, HomePage, VisualGame)](#מסכי-הפרויקט)
@@ -119,10 +119,13 @@
 
 <a name="קבצי-הפרויקט"></a>
 ### קבצי הפרויקט:
-הפרויקט בנוי במבנה Android תקני:
-- `java/com/example/tankscodecombat/`: מכיל את כל מחלקות הלוגיקה והממשק.
+הפרויקט בנוי במבנה Android תקני ומאורגן בחבילות (Packages) להפרדת אחריות:
+- `com.example.tankscodecombat`: החבילה הראשית.
+- `Activities`: `LogIn.java`, `SignIn.java`, `HomePage.java`, `VisualGame.java`.
+- `Fragments`: `MainActivityFragment.java`, `InstructionsFragment.java`, `LogoutFragment.java`.
+- `Game Engine`: `Game.java`, `Board.java`, `TankHandler.java`, `JSBotTank.java`.
+- `Models`: `Tank.java`, `Action.java`, `TankState.java`, `Location.java`, `Direction.java`.
 - `res/layout/`: קבצי ה-XML המגדירים את נראות המסכים.
-- `res/raw/`: קבצי מדיה (כמו מוזיקת הרקע).
 
 <a name="מסכי-הפרויקט"></a>
 ### מסכי הפרויקט:
@@ -130,36 +133,38 @@
 **שם המסך: LogIn (מסך כניסה)**
 - **תיאור:** דף הכניסה למשתמשים קיימים.
 - **אלמנטים:** תיבות טקסט למייל וסיסמה, כפתור כניסה וקישור להרשמה.
-  ![מסך הבית](/home/exinc/.cache/Google/AndroidStudio2025.3.4/projects/tankscodecombat.c9424150/.artifacts/20260427-175638-aedbe539-be3d-49f0-9753-dbecbc54ebc6/Screenshot-20260427-19:16:56.png)
+  ![מסך כניסה](pictures/Screenshot-20260427-19:15:54.png)
 
-
-**שם המסך: SignIn / SignUp (מסך הרשמה)**
+**שם המסך: SignUp (מסך הרשמה)**
 - **תיאור:** דף ליצירת חשבון חדש.
 - **אלמנטים:** שם משתמש, מייל, סיסמה וכפתור אישור השומר את הנתונים ב-Firebase.
-
-![מסך הרשמה](/home/exinc/.cache/Google/AndroidStudio2025.3.4/projects/tankscodecombat.c9424150/.artifacts/20260427-175638-aedbe539-be3d-49f0-9753-dbecbc54ebc6/Screenshot-20260427-19:16:24.png)
+  ![מסך הרשמה](pictures/Screenshot-20260427-19:16:24.png)
 
 **שם המסך: HomePage (מסך הבית)**
 - **תיאור:** מרכז הניווט של האפליקציה.
 - **אלמנטים:** תפריט תחתון (Bottom Navigation) למעבר בין מסך הבית, הוראות וניתוק.
+  ![מסך הבית](pictures/Screenshot-20260427-19:16:56.png)
 
-![מסך כניסה](/home/exinc/.cache/Google/AndroidStudio2025.3.4/projects/tankscodecombat.c9424150/.artifacts/20260427-175638-aedbe539-be3d-49f0-9753-dbecbc54ebc6/Screenshot-20260427-19:15:54.png)
-
-**שם המסך: MainActivityFragment (מסך הבית)**
-- **תיאור:** איפה שאתה מאתחל את המשחק.
-- **אלמנטים:** העלאת בוטים,
-  ![מסך כניסה](/home/exinc/.cache/Google/AndroidStudio2025.3.4/projects/tankscodecombat.c9424150/.artifacts/20260427-175638-aedbe539-be3d-49f0-9753-dbecbc54ebc6/Screenshot-20260427-19:17:41.png)
-
+**שם המסך: MainActivityFragment (טעינת בוטים)**
+- **תיאור:** המסך המאפשר בחירת בוטים ממערכת הקבצים או מה-Database.
+- **אלמנטים:** כפתורי "Select Bot", כפתור "Start Game".
+  ![מסך טעינה](pictures/Screenshot-20260427-19:17:41.png)
 
 **שם המסך: VisualGame (זירת הקרב)**
 - **תיאור:** הזירה הויזואלית שבה מתבצעת הסימולציה.
 - **אלמנטים:** `GameBoardView` (תצוגת הלוח), כפתורי שליטה בסימולציה (Play, Pause, Forward).
-
-![מסך הקרב](/home/exinc/.cache/Google/AndroidStudio2025.3.4/projects/tankscodecombat.c9424150/.artifacts/20260427-175638-aedbe539-be3d-49f0-9753-dbecbc54ebc6/Screenshot-20260427-19:17:11.png)
+  ![מסך הקרב](pictures/Screenshot-20260427-19:17:11.png)
 
 <a name="תרשים-מסכים"></a>
-### תרשים מסכים:
-*(כאן יופיע תרשים זרימה המראה את המעבר בין LogIn -> HomePage -> VisualGame)*
+### תרשים מסכים (Screen Flow):
+הניווט באפליקציה מתבצע בצורה הבאה:
+- **LogIn Activity**: נקודת הכניסה. ניתן לעבור ל-SignIn או להתחבר.
+- **SignIn Activity**: יצירת חשבון וחזרה ל-LogIn או מעבר ל-HomePage.
+- **HomePage Activity**: מסך הבית עם Bottom Navigation:
+    - **Home (MainActivityFragment)**: בחירת בוטים ומעבר ל-VisualGame.
+    - **Instructions (InstructionsFragment)**: קריאת התיעוד.
+    - **Logout (LogoutFragment)**: התנתקות וחזרה ל-LogIn.
+- **VisualGame Activity**: הרצת הקרב והצגת התוצאות.
 
 ---
 
@@ -203,9 +208,17 @@ dependencies {
 </manifest>
 ```
 
-<a name="תיאור-מחלקות-UML"></a>
+<a name="תיאור-מחלקות-uml"></a>
 ### תיאור מחלקות UML:
-<!-- IMAGE: UML Class Diagram placeholder -->
+
+**מבנה היררכי:**
+![UML Hierarchic](pictures/tankscodecombat-hierachic-groups.png)
+
+**מבנה רדיאלי (קשרי גומלין):**
+![UML Radial](pictures/tankscodecombat-radial.png)
+
+**קשרים עם AppCompatActivity:**
+![UML Radial Activity](pictures/tankscodecombat-radial-with-AppCompatActivity.png)
 
 ---
 
@@ -218,7 +231,7 @@ dependencies {
 - **Authentication:** ניהול רישום וכניסה מאובטחת. כל משתמש מקבל UID ייחודי.
 - **Realtime Database:** בסיס נתונים NoSQL בתצורת עץ JSON.
     - ענף `users/`: שומר תחת כל UID את השם (`name`), מספר הנצחונות (`wins`) וכמות המשחקים (`games_played`).
-    - ענף `codes/`: שומר את קוד ה-JavaScript האחרון שכתב המשתמש.
+    - ענף `bots/`: שומר את קוד ה-JavaScript האחרון שכתב המשתמש.
 
 ---
 
@@ -230,71 +243,309 @@ dependencies {
 
 #### LogIn.java
 **תפקיד המחלקה:**
-מחלקה זו אחראית על מסך הכניסה של האפליקציה. היא מאפשרת למשתמשים קיימים להתחבר באמצעות אימייל וסיסמה דרך Firebase Authentication.
+מחלקה זו אחראית על מסך הכניסה של האפליקציה. היא מאפשרת למשתמשים קיימים להתחבר באמצעות אימייל וסיסמה דרך Firebase Authentication וניהול כניסה אוטומטית בעזרת SharedPreferences.
 
 **תכונות המחלקה:**
-- `ETemail`: תיבת טקסט להזנת אימייל.
-- `ETpassword`: תיבת טקסט להזנת סיסמה.
-- `ref`: אובייקט FirebaseAuth לניהול האימות.
+- `ETemail`: EditText להזנת אימייל המשתמש.
+- `ETpassword`: EditText להזנת סיסמת המשתמש.
+- `ref`: אובייקט FirebaseAuth לניהול האימות מול השרת.
+- `prefs`: SharedPreferences לשמירת נתוני חיבור מקומיים לצורך כניסה מהירה בעתיד.
 
 **פעולות המחלקה:**
-- **onCreate**: מאתחל את הממשק ומקשר את ה-Views.
-- **Login**: מבצע אימות מול Firebase.
+
+**שם:** `onCreate`
+**תוכן:**
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_log_in);
+    ETemail = findViewById(R.id.email);
+    ETpassword = findViewById(R.id.password);
+    ref = FirebaseAuth.getInstance();
+    prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+    // Auto-login logic: check if user is already signed in via ref or prefs
+}
+```
+**תיאור:** מאתחלת את רכיבי הממשק, מקשרת אותם למשתני המחלקה ובודקת אם המשתמש כבר מחובר לצורך כניסה אוטומטית.
+
+**שם:** `Login`
+**תוכן:**
+```java
+public void Login(View view) {
+    String email = ETemail.getText().toString();
+    String password = ETpassword.getText().toString();
+    if (email.isEmpty() || password.isEmpty()) return;
+    ref.signInWithEmailAndPassword(email, password)
+       .addOnCompleteListener(this, task -> {
+           if (task.isSuccessful()) {
+               startActivity(new Intent(this, HomePage.class));
+               finish();
+           }
+       });
+}
+```
+**תיאור:** פונקציה המופעלת בלחיצה על כפתור ה-Login. היא מושכת את הטקסט מהשדות ומנסה לבצע אימות מול Firebase. במקרה של הצלחה, המשתמש מועבר למסך הבית.
+
+**שם:** `goToSignIn`
+**תיאור:** מעבירה את המשתמש למסך ההרשמה (`SignIn.java`).
+
+---
+
+#### SignIn.java
+**תפקיד המחלקה:**
+ניהול מסך ההרשמה ליצירת משתמשים חדשים במערכת.
+
+**תכונות המחלקה:**
+- `ETemail`: EditText להזנת אימייל חדש.
+- `ETpassword`: EditText להזנת סיסמה חדשה.
+- `ref`: אובייקט FirebaseAuth ליצירת המשתמש בשרת.
+
+**פעולות המחלקה:**
+
+**שם:** `createUser`
+**תוכן:**
+```java
+public void createUser(View view) {
+    String email = ETemail.getText().toString();
+    String password = ETpassword.getText().toString();
+    ref.createUserWithEmailAndPassword(email, password)
+       .addOnCompleteListener(this, task -> {
+           if (task.isSuccessful()) {
+               startActivity(new Intent(this, HomePage.class));
+               finish();
+           }
+       });
+}
+```
+**תיאור:** יוצרת משתמש חדש ב-Firebase Authentication ומעבירה אותו למסך הבית.
+
+---
+
+#### HomePage.java
+**תפקיד המחלקה:**
+ניהול התפריט הראשי והמעבר בין הפרגמנטים השונים (בית, הוראות, התנתקות) באמצעות Bottom Navigation.
+
+**פעולות:**
+
+**שם:** `onCreate`
+**תיאור:** מגדירה את המאזין ל-BottomNavigationView וטוענת את הפרגמנט ההתחלתי (`MainActivityFragment`).
+
+**שם:** `loadFragment`
+**תוכן:**
+```java
+private void loadFragment(Fragment fragment) {
+    getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit();
+}
+```
+**תיאור:** פונקציית עזר המחליפה את הפרגמנט המוצג בתוך ה-Container הראשי של המסך.
+
+---
 
 #### VisualGame.java
 **תפקיד המחלקה:**
-המסך המרכזי של המשחק. אחראי על הרצת הסימולציה, הצגת הלוח וניהול כפתורי השליטה.
+המסך המרכזי שבו מוצגת סימולציית הקרב בין הבוטים. אחראי על הרצת הלוגיקה והצגת התוצאות בצורה ויזואלית.
+
+**תכונות המחלקה:**
+- `game`: אובייקט ה-Game המנהל את לוגיקת הקרב הנסתרת.
+- `gameBoard`: Custom View (GameBoardView) לציור שדה הקרב.
+- `replayLogs`: רשימה של אובייקטי Logs המכילים את כל מהלכי המשחק לצורך הצגתם.
 
 **פעולות המחלקה:**
-- **saveGame**: שמירת תוצאות הקרב ויומני המהלכים ב-Database.
-- **logsListToArray**: המרת נתונים ממבנה JSON למערך אובייקטים מסוג Logs.
+
+**שם:** `saveGame`
+**תיאור:** פונקציה פרטית השומרת את תוצאות המשחק ויומני המהלכים ב-Firebase Realtime Database תחת תיקיית המשתמש המחובר.
+
+**שם:** `showGameResult`
+**תיאור:** מציגה דיאלוג למשתמש בסיום הקרב המודיע מי המנצח (או אם היה תיקו).
+
+---
 
 <a name="fragments"></a>
 ### Fragments (פרגמנטים)
 
 #### MainActivityFragment.java
 **תפקיד המחלקה:**
-מנהל את התוכן המרכזי של דף הבית, כולל טעינת בוטים והתחלת משחקים.
+מנהל את התוכן המרכזי של דף הבית – בחירת בוטים והרצת משחקים.
+
+**פעולות:**
+
+**שם:** `loadBot1 / loadBot2`
+**תיאור:** מפעיל את ה-ActivityResultLauncher לבחירת קובץ JavaScript ממערכת הקבצים של המכשיר.
+
+**שם:** `startGame`
+**תיאור:** אוסף את קוד הבוטים שנבחרו ועובר לאקטיביטי `VisualGame` להרצת הסימולציה.
+
+**שם:** `loadBotFromDB`
+**תיאור:** מושכת רשימת בוטים שנשמרו בעבר מה-Database של המשתמש ומאפשרת לבחור אותם לקרב.
+
+---
 
 #### InstructionsFragment.java
 **תפקיד המחלקה:**
-מציג את הוראות ה-API והשימוש באפליקציה.
+מציג למשתמש את ה-API וההוראות לכתיבת הבוט (JavaScript API).
+
+---
+
+#### LogoutFragment.java
+**תפקיד המחלקה:**
+ביצוע ניתוק מהחשבון (`signOut`) וחזרה למסך הכניסה.
+
+---
 
 <a name="game-engine"></a>
 ### Game Engine (מנוע המשחק)
 
 #### Game.java
 **תפקיד המחלקה:**
-המנוע המרכזי שמריץ את הקרב. היא אחראית על ניהול התורות, הפעלת הבוטים ותיעוד כל פעולה.
+המנוע המרכזי המריץ את לוגיקת הקרב בתורות. היא אחראית על תיאום בין הבוטים, עדכון הלוח ותיעוד המהלכים.
+
+**תכונות המחלקה:**
+- `MAX_NUMBER_OF_TURNS`: קבוע המגדיר את אורך המשחק (100 תורות).
+- `m_tanks`: מערך המכיל את שני אובייקטי הטנקים המשתתפים.
+- `m_logs`: מערך השומר את היסטוריית הקרב לצורך שידור חוזר.
+- `m_tankHandler`: אובייקט עזר לביצוע פעולות פיזיות על הלוח.
 
 **פעולות המחלקה:**
-- **run**: מריץ את לולאת המשחק המרכזית (100 תורות).
-- **document**: תיעוד מצב כל טנק בסוף כל תור.
+
+**שם:** `run`
+**תוכן:**
+```java
+public int run() {
+    for (int tIdx = 0; tIdx < MAX_NUMBER_OF_TURNS; tIdx++) {
+        for (int i = 0; i < 2; i++) {
+            TankState state = m_tankHandler.getState(i);
+            Action action = m_tanks[i].run(state);
+            int winner = m_tankHandler.action(i, action);
+            document(i, tIdx, action);
+            if (winner != -1) return winner;
+        }
+    }
+    return 0; // Draw
+}
+```
+**תיאור:** מריצה את לולאת המשחק המרכזית. בכל תור, כל בוט מקבל את מצבו הנוכחי, מחזיר פעולה, והפעולה מבוצעת על הלוח. אם יש מנצח, הלולאה עוצרת.
+
+---
 
 #### Board.java
 **תפקיד המחלקה:**
-ניהול המרחב הדו-מימדי וזיהוי התנגשויות בין פגזים לטנקים.
+ניהול המרחב הדו-מימדי (100x100) שבו מתנהל הקרב. אחראית על מיקומי הטנקים, חישוב מרחקים וזיהוי פגיעות.
+
+**פעולות:**
+
+**שם:** `getRadar`
+**תוכן:**
+```java
+public static Direction getRadar(int tankId) {
+    Location myLoc = m_tanksLocation[tankId];
+    Location enemyLoc = m_tanksLocation[1 - tankId];
+    double dx = enemyLoc.getX() - myLoc.getX();
+    double dy = enemyLoc.getY() - myLoc.getY();
+    return new Direction((int) Math.toDegrees(Math.atan2(dy, dx)));
+}
+```
+**תיאור:** מחשב את הזווית המדויקת מהטנק הנוכחי לעבר היריב.
+
+---
 
 #### JSBotTank.java
 **תפקיד המחלקה:**
-מחלקה המאפשרת הרצת קוד JavaScript שכתב המשתמש בתוך סביבת ה-Java של האפליקציה באמצעות מנוע Rhino.
+מימוש של `Tank` המאפשר הרצת קוד JavaScript שכתב המשתמש בתוך סביבת ה-Java באמצעות מנוע Rhino.
+
+**פעולות:**
+
+**שם:** `run`
+**תוכן:**
+```java
+@Override
+public Action run(TankState state) {
+    Object result = runFunction.call(cx, scope, scope, new Object[]{state});
+    return parseAction(result);
+}
+```
+**תיאור:** קוראת לפונקציית ה-JavaScript של המשתמש, מעבירה לה את מצב הטנק, וממירה את הערך המוחזר לאובייקט Java מסוג `Action`.
+
+---
 
 <a name="models-utilities"></a>
 ### Models / Utilities (מודלים וכלי עזר)
 
-#### Tank.java
+#### Tank.java (Abstract)
 **תפקיד המחלקה:**
-מייצג את הישות של הטנק במשחק.
+מחלקה מופשטת המגדירה את המאפיינים הבסיסיים של כל טנק (חיים, תחמושת, מהירות) ואת ממשק ה-`run` שעל כל בוט לממש.
 
-#### Direction.java / Location.java
+**תכונות המחלקה:**
+- `health`: כמות החיים הנוכחית של הטנק.
+- `_direction`: כיוון גוף הטנק.
+- `_turretDirection`: כיוון הצריח.
+- `_ammo`: סוג התחמושת.
+
+**פעולות המחלקה:**
+
+**שם:** `fire`
+**תוכן:**
+```java
+public void fire() {
+    if (canFire()) {
+        ammoCount--;
+        // ... Shell creation logic ...
+    }
+}
+```
+**תיאור:** מבצעת ירי פגז ומקטינה את מלאי התחמושת.
+
+---
+
+#### Location.java / Direction.java
 **תפקיד המחלקה:**
-ניהול כיוונים ומיקומים במרחב הדו-מימדי.
+אובייקטים לניהול קואורדינטות (X, Y) וזוויות (0-360) במרחב המשחק.
+
+**פעולות:**
+
+**שם:** `move` (Location)
+**תוכן:**
+```java
+public void move(Direction direction, Speed speed) {
+    double rad = Math.toRadians(direction.getDegrees());
+    this.x += (int)(Math.cos(rad) * speed.getSpeedVal());
+    this.y += (int)(Math.sin(rad) * speed.getSpeedVal());
+}
+```
+**תיאור:** מעדכנת את המיקום על סמך כיוון ומהירות.
+
+---
+
+#### GameBoardView.java
+**תפקיד המחלקה:**
+רכיב ממשק מותאם אישית (Custom View) האחראי על הציור הפיזי של שדה הקרב על המסך.
+
+**פעולות:**
+
+**שם:** `onDraw`
+**תיאור:** הלב של הממשק הויזואלי. הפונקציה מציירת את הרקע, את גוף הטנקים, את הצריחים שלהם ואת הפיצוצים בזמן אמת על סמך היומנים.
+
+---
+
+#### Logs.java
+**תפקיד:** אובייקט המתעד מצב טנק ברגע נתון (מיקום, כיוון, חיים) לצורך שידור חוזר.
+
+---
+
+#### MusicService.java
+**תפקיד המחלקה:**
+שירות הרץ ברקע ומנהל את מוזיקת המשחק בלולאה אינסופית.
+
+---
 
 ---
 
 <a name="ממשק-פנימי"></a>
 ### ממשק פנימי:
-במחלקה `RoomManager` קיים ממשק פנימי המאפשר לממש פונקציות למדא לקריאת נתונים מחדר המשחק:
+במחלקה `RoomManager` (אם הייתה קיימת בעבר, כאן נעשה שימוש בפרדיגמת ה-State וה-Callback) קיים ממשק פנימי המאפשר לממש פונקציות למדא לקריאת נתונים מחדר המשחק:
 ```java
 public interface IGameRoomRead {
     void onGameRoomRead(boolean resigned, String enemyTroopId, int[] reversedPos);
@@ -318,7 +569,7 @@ public interface IGameRoomRead {
 #### 1. כניסה והרשמה
 בפעם הראשונה שתפתח את האפליקציה, תתבקש ליצור חשבון. המידע יישמר ב-Firebase.
 
-#### 2. כתיבת קוד (Bot Programming)
+#### 2. טעינת בוטים
 עליך לכתוב פונקציית `run` שתקבל את מצב הטנק ותחזיר פעולה.
 **ה-API העומד לרשותך:**
 - `move(speed)`: תנועה קדימה/אחורה.
@@ -326,7 +577,7 @@ public interface IGameRoomRead {
 - `rotateTurret(degrees)`: סיבוב הצריח.
 - `fire()`: ירי פגז.
 
-![מסך הוראות](/home/exinc/.cache/Google/AndroidStudio2025.3.4/projects/tankscodecombat.c9424150/.artifacts/20260427-175638-aedbe539-be3d-49f0-9753-dbecbc54ebc6/Screenshot-20260427-19:17:23.png)
+![מסך הוראות](pictures/Screenshot-20260427-19:17:23.png)
 
 #### 3. צפייה בקרב
 לאחר הרצת הקוד, תועבר לסימולטור הויזואלי שבו תוכל לראות את ביצועי הבוט שלך.
@@ -340,7 +591,6 @@ public interface IGameRoomRead {
 ---
 
 <a name="10-ביבליוגרפיה"></a>
-<a name="ביבליוגרפיה"></a>
 ## 10. ביבליוגרפיה
 1. תיעוד רשמי של Firebase: https://firebase.google.com/docs
 2. מדריכי Android Developers: https://developer.android.com
@@ -349,7 +599,6 @@ public interface IGameRoomRead {
 ---
 
 <a name="11-נספחים"></a>
-<a name="נספחים"></a>
 ## 11. נספחים
 
 ### fragment_instructions.xml:
