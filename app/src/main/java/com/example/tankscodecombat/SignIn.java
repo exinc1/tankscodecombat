@@ -69,7 +69,7 @@ public class SignIn extends AppCompatActivity {
                         Toast.makeText(SignIn.this, "User created successfully\nUid: " + user.getUid(), Toast.LENGTH_SHORT).show();
 
                         // go to MainActivity after successful sign in
-                        Intent intent = new Intent(SignIn.this, MainActivity.class);
+                        Intent intent = new Intent(SignIn.this, HomePage.class);
                         startActivity(intent);
                         finish();
                     }
