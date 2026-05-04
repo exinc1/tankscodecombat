@@ -57,8 +57,7 @@
 ## 1. מבוא
 
 <a name="רקע"></a>
-### רקע:
-בעולם המודרני, פיתוח חשיבה אלגוריתמית ויכולת כתיבת קוד הופכים לכלים חיוניים. הפרויקט "Tanks Code Combat" שואף לשלב בין עולם המשחקים האינטראקטיביים לבין לימוד יסודות התכנות, תוך מתן פלטפורמה תחרותית ומהנה למשתמשים.
+## רקע:
 
 <a name="שם-הפרויקט"></a>
 ### שם הפרויקט:
@@ -92,11 +91,11 @@
 ### אפליקציות דומות בשוק:
 1. **Robocode:** מערכת ותיקה למחשב האישי שבה מתכנתים טנקים ב-Java. היא מהווה את ההשראה המרכזית, אך Tanks Code Combat מביא את הקונספט לעולם המובייל עם דגש על פשטות ונגישות.
 2. **Screeps:** משחק MMO למתכנתים שבו השליטה במושבה מתבצעת דרך JavaScript. המשחק מאוד מורכב ויכול להרתיע מתחילים, בעוד שהפרויקט שלי מתמקד בקרבות קצרים ומהירים.
-3. **Chess.com:** אמנם מדובר במשחק לוח מסורתי, אך הוא מדגים את החשיבות של ניהול משתמשים, דירוגים וסנכרון מצב משחק – אלמנטים שיושמו גם כאן.
+3. **Planet wars:** משחק של לכבוש את כל הכוכבים של הצד השני עד שאתה מנצח. שני הצדדים זה בוטים שכתובים בפייתון. 
 
 <a name="סקירת-השוק"></a>
 ### סקירת השוק:
-ממחקר השוק שערכתי, רוב האפליקציות המשלבות תכנות במובייל הן "קורסים" סטטיים. קיימות מעט מאוד אפליקציות המאפשרות תחרות אקטיבית מבוססת קוד בזמן אמת עם ממשק גרפי מלוטש. רוב המשחקים הקיימים הם Arcade ואינם דורשים חשיבה אסטרטגית מוקדמת. Tanks Code Combat תופס את הנישה שבין לימוד תיאורטי לבין משחק פעולה.
+ממחקר השוק שערכתי, רוב האפליקציות המשלבות תכנות במובייל הן "קורסים" סטטיים. קיימות מעט מאוד אפליקציות המאפשרות תחרות אקטיבית מבוססת קוד בזמן אמת עם ממשק גרפי. רוב המשחקים הקיימים הם Arcade ואינם דורשים חשיבה אסטרטגית מוקדמת. Tanks Code Combat תופס את הנישה שבין לימוד תיאורטי לבין משחק פעולה.
 
 ---
 
@@ -591,42 +590,557 @@ public interface IGameRoomRead {
 
 <a name="9-רפלקציה--סיכום-אישי"></a>
 ## 9. רפלקציה / סיכום אישי
-פיתוח "Tanks Code Combat" היה מסע לימודי משמעותי עבורי. האתגר הטכני הגדול ביותר היה בניית מנוע שיודע להריץ לוגיקה של משתמש בצורה מבודדת. למדתי לעומק על עבודה עם Realtime Database ועל חשיבות ההפרדה בין לוגיקת המשחק לתצוגה הויזואלית.
+פיתוח "Tanks Code Combat" היה מסע לימודי משמעותי עבורי. האתגר הטכני הגדול ביותר היה התעסקות בין המרה של בוט שכתוב בjs לבין לוגיקאת המשחק. למדתי לעומק על עבודה עם Realtime Database ועל חשיבות ההפרדה בין לוגיקת המשחק לתצוגה הויזואלית.
 
 ---
 
 <a name="10-ביבליוגרפיה"></a>
 ## 10. ביבליוגרפיה
-1. תיעוד רשמי של Firebase: https://firebase.google.com/docs
-2. מדריכי Android Developers: https://developer.android.com
-3. Rhino JavaScript Engine: https://github.com/mozilla/rhino
+1. planet wars: https://wingfighter.fandom.com/wiki/Planet_Wars
+2. code wars: https://www.codewars.com/
+3. firebase realtime docometion: https://firebase.google.com/docs/database#how_does_it_work
 
 ---
 
 <a name="11-נספחים"></a>
 ## 11. נספחים
 
+### activity_log_in.xml:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".LogIn">
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="250dp"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:hint="email"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.211" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="250dp"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="password"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.31" />
+
+    <TextView
+        android:id="@+id/massage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="login"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.051" />
+
+    <Button
+        android:id="@+id/SignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="Login"
+        android:text="login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.306"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.427" />
+
+    <Button
+        android:id="@+id/signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="signin"
+        android:onClick="goToSignIn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.668"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.427" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+### activity_sign_in.xml:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".SignIn">
+
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="250dp"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:hint="email"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.211" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="250dp"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="password"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.31" />
+
+    <TextView
+        android:id="@+id/massage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sign in"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.051" />
+
+    <Button
+        android:id="@+id/SignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="createUser"
+        android:text="sign in"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.323"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.428" />
+
+    <Button
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="login"
+        android:onClick="goToLogin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.668"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.428" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+### activity_home_page.xml:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+### activity_visual_game.xml:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VisualGame">
+
+    <com.example.tankscodecombat.GameBoardView
+        android:id="@+id/gameBoard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonsScrollView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <HorizontalScrollView
+        android:id="@+id/buttonsScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/buttonsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="12dp"
+            android:background="#222222">
+
+            <Button
+                android:id="@+id/zoomOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zoom Out" />
+
+            <Button
+                android:id="@+id/skipStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start" />
+
+            <Button
+                android:id="@+id/skipBack10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-10" />
+
+            <Button
+                android:id="@+id/prevButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Prev" />
+
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next" />
+
+            <Button
+                android:id="@+id/skipForward10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+10" />
+
+            <Button
+                android:id="@+id/skipEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="End" />
+
+            <Button
+                android:id="@+id/zoomIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zoom In" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+### fragment_main.xml:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/tank_background"
+    android:layoutDirection="ltr"
+
+    tools:context=".MainActivityFragment">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:shadowColor="@android:color/white"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="7"
+        android:text="tanks code combat"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnSelectBot1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Bot 1"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <TextView
+        android:id="@+id/tvBot1Status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No file selected"
+        android:textColor="@android:color/white"
+        android:shadowColor="@android:color/black"
+        android:shadowRadius="3"
+        app:layout_constraintTop_toBottomOf="@id/btnSelectBot1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btnSelectBot2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Bot 2"
+        app:layout_constraintTop_toBottomOf="@id/tvBot1Status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/tvBot2Status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No file selected"
+        android:textColor="@android:color/white"
+        android:shadowColor="@android:color/black"
+        android:shadowRadius="3"
+        app:layout_constraintTop_toBottomOf="@id/btnSelectBot2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <ImageButton
+        android:id="@+id/startGame"
+        android:layout_width="108dp"
+        android:layout_height="120dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/explosion"
+        android:contentDescription="ScoreBoard"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.445" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:background="#22FFFFFF"
+        android:padding="2dp"
+        app:layout_constraintStart_toStartOf="@id/startGame"
+        app:layout_constraintEnd_toEndOf="@id/startGame"
+        app:layout_constraintTop_toTopOf="@id/startGame"
+        app:layout_constraintBottom_toBottomOf="@id/startGame"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
 ### fragment_instructions.xml:
 ```xml
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#121212"
     android:padding="16dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
             android:text="Tanks Code Combat - API Guide"
             android:textColor="#FFD700"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center" />
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Your bot's 'run' function must return an 'Action' object. Use the following commands to dominate the battlefield:"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <!-- MOVE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1. MOVE"
+            android:textColor="#00FF00"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Usage: new Action(Action.ActionType.MOVE, speed)\nSpeeds: -1 (Reverse), 0 (Stop), 1 (Slow), 2 (Fast)"
+            android:textColor="#CCCCCC" />
+
+        <!-- ROTATE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2. ROTATE"
+            android:textColor="#00FF00"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Usage: new Action(Action.ActionType.ROTATE, degrees)\nDescription: Rotates the tank chassis by the given degrees."
+            android:textColor="#CCCCCC" />
+
+        <!-- ROTATE TURRET -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3. ROTATE TURRET"
+            android:textColor="#00FF00"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Usage: new Action(Action.ActionType.ROTATE_TURRET, degrees)\nDescription: Rotates the gun turret independently."
+            android:textColor="#CCCCCC" />
+
+        <!-- FIRE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="4. FIRE"
+            android:textColor="#FF4500"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Usage: new Action(Action.ActionType.FIRE)\nDescription: Fires a projectile from the current turret direction."
+            android:textColor="#CCCCCC" />
+
+        <!-- RADAR -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="5. RADAR (State Data)"
+            android:textColor="#1E90FF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="The 'TankState' object provides real-time intel:\n- state.radar: Direction to opponent\n- state.distance: Distance to opponent"
+            android:textColor="#CCCCCC" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Good luck, Commander!"
+            android:textColor="#FFD700"
+            android:textSize="16sp"
+            android:textStyle="italic" />
+
     </LinearLayout>
 </ScrollView>
+```
+
+### fragment_logout.xml:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LogoutFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/hello_blank_fragment" />
+
+</FrameLayout>
 ```
 
 </div>
