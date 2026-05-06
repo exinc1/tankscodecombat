@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="Tanks Code Combat - API Guide"
+            android:textColor="#FFD700"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Your bot's 'run' function must return an 'Action' object. Use the following commands to dominate the battlefield:"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <!-- MOVE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1. MOVE"
+            android:textColor="#00FF00"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Usage: new Action(Action.ActionType.MOVE, speed)\nSpeeds: -1 (Reverse), 0 (Stop), 1 (Slow), 2 (Fast)"
+            android:textColor="#CCCCCC" />
+
+        <!-- ROTATE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2. ROTATE"
+            android:textColor="#00FF00"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Usage: new Action(Action.ActionType.ROTATE, degrees)\nDescription: Rotates the tank chassis by the given degrees."
+            android:textColor="#CCCCCC" />
+
+        <!-- ROTATE TURRET -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3. ROTATE TURRET"
+            android:textColor="#00FF00"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Usage: new Action(Action.ActionType.ROTATE_TURRET, degrees)\nDescription: Rotates the gun turret independently."
+            android:textColor="#CCCCCC" />
+
+        <!-- FIRE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="4. FIRE"
+            android:textColor="#FF4500"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Usage: new Action(Action.ActionType.FIRE)\nDescription: Fires a projectile from the current turret direction."
+            android:textColor="#CCCCCC" />
+
+        <!-- RADAR -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="5. RADAR (State Data)"
+            android:textColor="#1E90FF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="The 'TankState' object provides real-time intel:\n- state.radar: Direction to opponent\n- state.distance: Distance to opponent"
+            android:textColor="#CCCCCC" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Good luck, Commander!"
+            android:textColor="#FFD700"
+            android:textSize="16sp"
+            android:textStyle="italic" />
+
+    </LinearLayout>
+</ScrollView>
